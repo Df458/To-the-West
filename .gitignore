@@ -1,0 +1,10 @@
+# Ignore vim files
+*.un~
+.swp
+
+# Ingore compiled file
+to-the-west
+obj/
+
+# Ignore other
+gmon.out

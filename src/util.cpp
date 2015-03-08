@@ -1,0 +1,65 @@
+#ifdef WINDOWS
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+#include <panel.h>
+#include "util.h"
+
+using namespace std;
+
+std::string get_path(void) {
+	char buf[1024];
+#ifdef WINDOWS
+    GetModuleFileName(NULL, buf, 1024);
+    std::string::size_type pos = std::string(buf).find_last_of("\\/");
+    return std::string(buf).substr(0, pos);
+#elif __GNUC__
+    ssize_t len = ::readlink("/proc/self/exe", buf, sizeof(buf)-1);
+    if (len != -1) {
+	buf[len] = '\0';
+    std::string s = std::string(buf);
+    return s.erase(s.rfind("/"));
+    } else {
+		error("Error: Could not determine working directory\n");
+		return "";
+    }
+#endif
+}
+
+void _error(const char* file, unsigned line, std::string message) {
+    attron(COLOR_PAIR(1));
+    mvprintw(0, 0, ("Error in file " + string(file) + " at line  " + to_string(line) + ": " + message).c_str());
+    attroff(COLOR_PAIR(1));
+    getch();
+}
+
+void display_help(void) {
+    WINDOW* help_win = newwin(20, 80, 0, 0);
+    PANEL*  help_panel = new_panel(help_win);
+    top_panel(help_panel);
+    box(help_win, 0, 0);
+    while(true) {
+        uint16_t scroll = 0;
+        for(uint16_t i = scroll; i < scroll + 20 && help_lines[i] != NULL; ++i) {
+            mvwprintw(help_win, i - scroll + 1, 1, help_lines[i]);
+        }
+        update_panels();
+        doupdate();
+        char input = getch();
+        switch(input) {
+            case 'j':
+                if(help_lines[scroll] != NULL)
+                    ++scroll;
+                break;
+            case 'k':
+                if(scroll > 0)
+                    --scroll;
+                break;
+            case 'q':
+                return;
+        }
+    }
+    del_panel(help_panel);
+    delwin(help_win);
+}
