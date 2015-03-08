@@ -1,0 +1,6 @@
+<biome>
+    <tile symbol=',' color="2" cost="1" freq="15"/>
+    <tile symbol='"' color="2" cost="3" freq="10"/>
+    <tile symbol='t' color="5" cost="2" freq="6"/>
+    <tile symbol="o" color="0" cost="5" freq="1"/>
+</biome>

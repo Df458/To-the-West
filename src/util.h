@@ -10,6 +10,7 @@ const uint8_t NO_COLOR = 0b000;
 const uint8_t BASIC_COLORS = 0b100;
 const uint8_t CAN_CHANGE_COLOR = 0b010;
 const uint8_t MANY_COLORS = 0b001; // >=256 colors
+
 extern uint16_t color_flags;
 extern Map* map;
 extern Player* player;
@@ -40,4 +41,7 @@ const char* const help_lines[] = {
 };
 
 #define clamp(x, lo, hi) ((x > hi) ? hi : ((x < lo) ? lo : x))
+
+char* load_file(const char* filename);
+
 #endif

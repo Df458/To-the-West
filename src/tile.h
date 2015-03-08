@@ -7,6 +7,8 @@
 
 class Tile : public LuaObject {
 public:
+    Tile() {}
+    Tile(symbol s, int cost) : displayed(s), move_cost(cost) {}
     void draw(WINDOW* win, int x, int y);
     inline uint8_t getCost() { return move_cost; }
     inline void setSymbol(symbol sym) { displayed = sym; }

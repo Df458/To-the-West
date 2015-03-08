@@ -63,3 +63,21 @@ void display_help(void) {
     del_panel(help_panel);
     delwin(help_win);
 }
+
+char* load_file(const char* path) {
+    FILE* file = fopen((get_path() + path).c_str(), "rb");
+    if(!file) {
+        error("File " + get_path() + path + " not found.");
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    size_t filesize = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char* filedata = new char[filesize];
+    fread(filedata, 1, filesize, file);
+    filedata[filesize - 1] = '\0';
+
+    fclose(file);
+    return filedata;
+}

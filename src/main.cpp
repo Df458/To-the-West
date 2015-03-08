@@ -12,6 +12,9 @@ uint16_t color_flags;
 Player* player;
 Map* map;
 
+uint8_t COLOR_LIGHTGREEN = 10;
+uint8_t COLOR_BROWN = 17;
+
 bool start_menu() {
     WINDOW* menu_window = newwin(20, 80, 0, 0);
     PANEL* menu_panel = new_panel(menu_window);
@@ -87,7 +90,15 @@ int main(int argc, char* argv[]) {
      * 1 - White on red,   error
     */
     if(has_colors()) {
+        if(COLORS == 8) {
+            COLOR_LIGHTGREEN = COLOR_GREEN;
+        }
         color_flags += BASIC_COLORS;
+        init_pair(1, COLOR_WHITE, COLOR_RED); // Error color
+        init_pair(2, COLOR_LIGHTGREEN, COLOR_BLACK); // Green on black
+        init_pair(4, COLOR_YELLOW, COLOR_BLACK); // Yellow on black
+        init_pair(3, COLOR_YELLOW, COLOR_BLACK); // Brown on black
+        init_pair(5, COLOR_GREEN, COLOR_BLACK); // Dark Green on black
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {
@@ -95,8 +106,9 @@ int main(int argc, char* argv[]) {
             }
             init_color(COLOR_RED, 975, 80, 0);
             init_color(COLOR_WHITE, 900, 900, 900);
+            init_color(COLOR_BROWN, 600, 300, 50);
+            init_pair(3, COLOR_BROWN, COLOR_BLACK); // Brown on black
         }
-        init_pair(1, COLOR_WHITE, COLOR_RED); // Error color
     }
 
     player = new Player();
@@ -107,6 +119,7 @@ int main(int argc, char* argv[]) {
     if(!start_menu())
         return 0;
 
+    map->generate();
     map->draw();
     update_panels();
     doupdate();
