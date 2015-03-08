@@ -6,6 +6,10 @@
 Player::Player(void) : Unit() {
     displayed.disp = '@';
     move_func = "test.lua";
+    position.x = 2979;
+    position.y = 9;
+    faction = 0;
+    controlled = true;
 }
 
 int Player::get_input(void) {

@@ -13,6 +13,7 @@ Player* player;
 Map* map;
 
 uint8_t COLOR_LIGHTGREEN = 10;
+uint8_t COLOR_LIGHTBLUE  = 12;
 uint8_t COLOR_BROWN = 17;
 
 bool start_menu() {
@@ -73,6 +74,7 @@ bool start_menu() {
 }
 
 int main(int argc, char* argv[]) {
+    srand(time(NULL));
     game_state = luaL_newstate();
     luaL_openlibs(game_state);
     luaL_openlib(game_state, "game", lua_global_functions, 0);
@@ -92,6 +94,7 @@ int main(int argc, char* argv[]) {
     if(has_colors()) {
         if(COLORS == 8) {
             COLOR_LIGHTGREEN = COLOR_GREEN;
+            COLOR_LIGHTBLUE = COLOR_BLUE;
         }
         color_flags += BASIC_COLORS;
         init_pair(1, COLOR_WHITE, COLOR_RED); // Error color
@@ -99,6 +102,9 @@ int main(int argc, char* argv[]) {
         init_pair(4, COLOR_YELLOW, COLOR_BLACK); // Yellow on black
         init_pair(3, COLOR_YELLOW, COLOR_BLACK); // Brown on black
         init_pair(5, COLOR_GREEN, COLOR_BLACK); // Dark Green on black
+        init_pair(6, COLOR_LIGHTBLUE, COLOR_BLACK);
+        init_pair(7, COLOR_BLUE, COLOR_BLACK);
+        init_pair(8, COLOR_RED, COLOR_BLACK);
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {
@@ -125,7 +131,7 @@ int main(int argc, char* argv[]) {
     doupdate();
     while(time_passed >= 0) {
         time_passed = player->get_input();
-        map->update();
+        map->update(time_passed);
         map->draw();
         update_panels();
         doupdate();

@@ -36,7 +36,13 @@ void display_help(void);
 
 const char* const help_lines[] = {
     "Controls:",
-    "~=-_None_-=~",
+    "y k u",
+    " \\|/ ",
+    "h-.-l   Movement keys",
+    " /|\\",
+    "b j n",
+    "",
+    "q: go back/exit game(ingame)",
     NULL
 };
 

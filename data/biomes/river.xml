@@ -1,0 +1,12 @@
+<biome size="5" variance="10" spread="4">
+    <tile symbol='~' color="6" cost="5" freq="80"/>
+    <tile symbol='=' color="6" cost="5" freq="80"/>
+    <tile symbol='-' color="6" cost="5" freq="80"/>
+    <tile symbol="~" color="0" cost="5" freq="40"/>
+    <tile symbol='=' color="0" cost="5" freq="40"/>
+    <tile symbol='-' color="0" cost="5" freq="40"/>
+    <tile symbol="~" color="7" cost="5" freq="80"/>
+    <tile symbol='=' color="7" cost="5" freq="80"/>
+    <tile symbol='-' color="7" cost="5" freq="80"/>
+    <tile symbol="o" color="0" cost="5" freq="3"/>
+</biome>

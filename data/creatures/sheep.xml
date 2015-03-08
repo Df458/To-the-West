@@ -1,0 +1,5 @@
+<creature name="sheep">
+    <symbol char="r" color="0"/>
+    <stats hp="25" str="6" spd="6" acc="8" def="4" dog="5"/>
+    <ai faction="3" hostile="false"/>
+</creature>
