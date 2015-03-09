@@ -1,5 +1,6 @@
 #include "unit.h"
 #include "map.h"
+#include "player.h"
 #include <cstring>
 #include <rapidxml.hpp>
 
@@ -84,7 +85,18 @@ void Unit::draw(WINDOW* window, uint16_t corner) {
 }
 
 void Unit::update(uint16_t time) {
+    if(!alive)
+        return;
+
     call(update_func);
+
+    if(!target) {
+        //target = player;
+    }
+    else {
+        vec2 dist = position - target->position;
+        move(step(dist));
+    }
 }
 
 void Unit::insert(void) {
@@ -98,8 +110,11 @@ bool Unit::move(vec2 delta) {
     Tile* prev = map->tile_at(position);
     Tile* next = map->tile_at(position + delta);
     if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
-        if(next->getOccupied() && should_attack(next->getOccupant()))
-            attack(next->getOccupant());
+        if(next->getOccupied() && should_attack(next->getOccupant())) {
+            combat_result res = attack(next->getOccupant());
+            if(next->getOccupant() == player)
+                player->attacked(res, this);
+        }
         return false;
     }
 
@@ -109,7 +124,7 @@ bool Unit::move(vec2 delta) {
     position += delta;
     next->call(next->get_enter_func());
     next->setOccupied(true);
-    prev->setOccupant(this);
+    next->setOccupant(this);
 
     return true;
 }
@@ -125,7 +140,8 @@ combat_result Unit::attack(Unit* other) {
     combat_result retval;
     if(!other)
         return retval;
-    other->target = this;
+    if(other != player)
+        other->target = this;
     uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
     uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
     if(hit_roll < dodge_roll)
@@ -149,7 +165,7 @@ combat_result Unit::attack(Unit* other) {
 bool Unit::should_attack(Unit* other) {
     if(!other)
         return false;
-    if(other->target == this)
+    if(other->target == this || target == other)
         return true;
     switch(faction) {
         case 0:

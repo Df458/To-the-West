@@ -9,7 +9,7 @@ class Unit;
 class Biome {
 public:
     Biome(std::string file);
-    Tile get_tile(void);
+    Tile* get_tile(void);
     Unit* get_unit(void);
     void set_index(uint16_t index);
     inline const uint16_t& get_size(void) const { return size; }
@@ -38,11 +38,11 @@ public:
     void update(uint16_t time);
     void generate(void);
     void spawn(void);
-    inline Tile* tile_at(vec2 position) { return &map_data[position.x][position.y]; }
+    inline Tile* tile_at(vec2 position) { return map_data[position.x][position.y]; }
 
 protected:
     Unit* active_unit;
-    Tile map_data[3000][18];
+    Tile* map_data[3000][18];
     std::vector<Unit*> unit_list[4];
     WINDOW* map_window;
     PANEL* map_panel;

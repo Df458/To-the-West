@@ -1,4 +1,5 @@
 #include "map.h"
+#include "player.h"
 #include <cstring>
 #include <string>
 #include <rapidxml.hpp>
@@ -43,7 +44,7 @@ void Map::draw(void) {
     uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 2922);
     for(uint16_t i = corner; i < corner + 78; ++i) {
         for(int j = 0; j < 18; ++j) {
-            map_data[i][j].draw(map_window, i - corner + 1, j + 1);
+            map_data[i][j]->draw(map_window, i - corner + 1, j + 1);
         }
     }
 
@@ -66,12 +67,16 @@ void Map::update(uint16_t time) {
         for(auto i = unit_list[j].begin(); i != unit_list[j].end();) {
             Unit* u = (*i);
             if(!u) {
+                error("Weird. This shouldn't happen.");
                 auto k = i + 1;
                 unit_list[j].erase(i);
                 i = k;
             }
             u->update(time);
             if(!u->getAlive()) {
+                if(u == player) {
+                    return;
+                }
                 delete u;
                 auto k = i + 1;
                 unit_list[j].erase(i);
@@ -92,9 +97,9 @@ void Map::spawn(void) {
     }
     x = clamp((int32_t)corner + x, 0, 3000);
     uint16_t y = rand() % 18;
-    if(!map_data[x][y].getPassable() || map_data[x][y].getOccupied() || !biomes[map_data[x][y].getBiome()].get_unit())
+    if(!map_data[x][y]->getPassable() || map_data[x][y]->getOccupied() || !biomes[map_data[x][y]->getBiome()].get_unit())
         return;
-    addUnit(new Unit(biomes[map_data[x][y].getBiome()].get_unit(), vec2(x, y)));
+    addUnit(new Unit(biomes[map_data[x][y]->getBiome()].get_unit(), vec2(x, y)));
 }
 
 void Map::generate(void) {
@@ -196,23 +201,23 @@ Unit* Biome::get_unit(void) {
     uint16_t mark = 0;
     for(uint16_t i = 0; i < units.size(); ++i) {
         if(unit_freqs[i] + mark >= selection)
-            return &units[i];
+            return new Unit(units[i]);
         else
             mark += unit_freqs[i];
     }
     return NULL;
 }
 
-Tile Biome::get_tile(void) {
+Tile* Biome::get_tile(void) {
     uint16_t selection = rand() % (freqs + 1);
     uint16_t mark = 0;
     for(uint16_t i = 0; i < terrains.size(); ++i) {
         if(terrain_freqs[i] + mark >= selection) {
-            return terrains[i];
+            return new Tile(terrains[i]);
         } else
             mark += terrain_freqs[i];
     }
-    return Tile();
+    return NULL;
 }
 
 void Biome::set_index(uint16_t index) {

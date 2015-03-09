@@ -82,3 +82,18 @@ char* load_file(const char* path) {
     fclose(file);
     return filedata;
 }
+
+vec2 step(vec2 delta) {
+    if(delta.x == 0) {
+        if(delta.y == 0)
+            return delta;
+        return vec2(0, -delta.y / abs(delta.y));
+    } else if(delta.y == 0)
+        return vec2(-delta.x / abs(delta.x), 0);
+
+    if((float)delta.y / (float)delta.x < 0.6)
+        return vec2(-delta.x / abs(delta.x), 0);
+    if((float)delta.x / (float)delta.y < 0.6)
+        return vec2(0, -delta.y / abs(delta.y));
+    return vec2(-delta.x / abs(delta.x), -delta.y / abs(delta.y));
+}

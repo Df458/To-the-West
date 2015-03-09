@@ -133,7 +133,26 @@ combat_result Player::attack(Unit* other) {
     return res;
 }
 
+void Player::attacked(combat_result res, Unit* other) {
+    if(!res.flags)
+        add_message(("The " + other->getName() + " misses."));
+    else if(res.flags & 0b001) {
+        add_message(message("The " + other->getName() + " strikes a killing blow!", 8));
+        add_message(message("And so, your quest comes to a tragic end..."));
+        draw_messages();
+        update_panels();
+        doupdate();
+        getch();
+        exit(0);
+    } else if(res.flags & 0b010)
+        add_message(message("The " + other->getName() +  "'s blow glances off your armor for " + to_string(res.damage) + " damage.", 4));
+    else
+        add_message(message("The " + other->getName() + " hits you for " + to_string(res.damage) + " damage.", 4));
+}
+
 bool Player::should_attack(Unit* other) {
+    if(!other)
+        return false;
     if(!Unit::should_attack(other)) {
         add_message(message("Really attack the " + other->getName() + "? (y/n)", 4));
         draw_messages();
