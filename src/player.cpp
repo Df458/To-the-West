@@ -2,6 +2,9 @@
 #include "map.h"
 #include "util.h"
 #include <curses.h>
+#include <string>
+
+using namespace std;
 
 Player::Player(void) : Unit() {
     displayed.disp = '@';
@@ -11,8 +14,16 @@ Player::Player(void) : Unit() {
     faction = 0;
     controlled = true;
 
-    ui_window = newwin(11, 80, 21, 0);
+    ui_window = newwin(11, 80, 20, 0);
     ui_panel = new_panel(ui_window);
+
+    statistics.max_hp = 12;
+    statistics.hp = 12;
+    statistics.accuracy = 10;
+    statistics.strength = 12;
+    statistics.defense = 12;
+    statistics.dodge = 12;
+    statistics.speed = 12;
 }
 
 int Player::get_input(void) {
@@ -69,6 +80,16 @@ void Player::draw(WINDOW* window, uint16_t corner) {
     uint16_t j = 0;
     wclear(ui_window);
     box(ui_window, 0, 0);
+
+    uint16_t hp_color = 2;
+    if(statistics.hp / statistics.max_hp < .5f)
+        hp_color = 4;
+    else if(statistics.hp / statistics.max_hp < .25f)
+        hp_color = 8;
+    mvwprintw(window, 19, 1, "HP: ");
+    wattron(window, COLOR_PAIR(hp_color));
+    mvwprintw(window, 19, 5, (to_string((uint16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
+    wattroff(window, COLOR_PAIR(hp_color));
     for(int32_t i = messages.size() - 1; i >= 0 && j < 9; --i) {
         wattron(ui_window, COLOR_PAIR(messages[i].color));
         mvwprintw(ui_window, 9 - j, 1, messages[i].text.c_str());
@@ -94,4 +115,17 @@ void Player::add_message(message mess) {
     }
 
     messages.push_back(mess);
+}
+
+uint8_t Player::attack(Unit* other) {
+    uint8_t res = Unit::attack(other);
+    if(!res)
+        add_message(("You miss the " + other->getName() + "."));
+    else if(res & 0b001)
+        add_message(message("You slay the " + other->getName() + "!"));
+    else if(res & 0b010)
+        add_message(message("Your blow glances off the " + other->getName() + "."));
+    else
+        add_message(message("You hit the " + other->getName() + "."));
+    return res;
 }

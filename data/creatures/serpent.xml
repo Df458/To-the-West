@@ -1,5 +1,5 @@
 <creature name="serpent">
     <symbol char="s" color="8"/>
-    <stats hp="12" str="4" spd="15" acc="12" def="0" dog="17"/>
+    <stats hp="12" str="4" spd="15" acc="12" def="1" dog="17"/>
     <ai faction="3" hostile="true"/>
 </creature>

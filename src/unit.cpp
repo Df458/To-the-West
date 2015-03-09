@@ -3,6 +3,7 @@
 #include <cstring>
 #include <rapidxml.hpp>
 
+using namespace std;
 using namespace rapidxml;
 
 Unit::Unit(void) {
@@ -24,6 +25,7 @@ Unit::Unit(Unit* copy, vec2 pos) {
     displayed = copy->displayed;
 
     map->tile_at(position)->setOccupied(true);
+    map->tile_at(position)->setOccupant(this);
     map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
     call(create_func);
 }
@@ -95,15 +97,55 @@ void Unit::insert(void) {
 bool Unit::move(vec2 delta) {
     Tile* prev = map->tile_at(position);
     Tile* next = map->tile_at(position + delta);
-    if(next->getOccupied() || !next->getPassable() || position.x + delta.x < 0 || position.x + delta.x > 2999 || position.y + delta.y < 0 || position.y + delta.y > 17) {
+    if(next->getOccupied() || !next->getPassable() || (position.x == 1 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 1 && delta.y < 0) || position.y + delta.y > 17) {
+        if(next->getOccupied() && should_attack(next->getOccupant()))
+            attack(next->getOccupant());
         return false;
     }
 
     prev->call(prev->get_leave_func());
     prev->setOccupied(false);
+    prev->setOccupant(NULL);
     position += delta;
     next->call(next->get_enter_func());
     next->setOccupied(true);
+    prev->setOccupant(this);
 
+    return true;
+}
+
+void Unit::die(void) {
+    map->tile_at(position)->setOccupied(false);
+    map->tile_at(position)->setOccupant(NULL);
+    alive = false;
+    call(die_func);
+}
+
+uint8_t Unit::attack(Unit* other) {
+    uint8_t retval = 0;
+    uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
+    uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
+    if(hit_roll < dodge_roll)
+        return 0;
+    retval += 0b100;
+    uint16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 5, 0, 25);
+    float mod = 1.0f;
+    if(hit_roll < block_roll) {
+        mod = 0.5f;
+        retval += 0b010;
+    }
+    float damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2 - 5, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
+    other->statistics.hp -= damage;
+    if(other->statistics.hp <= 0) {
+        other->die();
+        retval += 0b001;
+    }
+    return retval;
+}
+
+bool Unit::should_attack(Unit* other) {
+    if(!other)
+        return false;
+    // Do this based on faction later, and overload for player
     return true;
 }

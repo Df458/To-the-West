@@ -5,6 +5,8 @@
 #include "util.h"
 #include "item.h"
 
+class Unit;
+
 class Tile : public LuaObject {
 public:
     Tile() {}
@@ -16,6 +18,8 @@ public:
     inline uint16_t getBiome(void) { return biome_index; }
     inline void setOccupied(bool oc) { occupied = oc; }
     inline bool getOccupied(void) { return occupied; }
+    inline Unit* getOccupant(void) { return occupant; }
+    inline void setOccupant(Unit* oc) { occupant = oc; }
     inline void setPassable(bool pa) { passable = pa; }
     inline bool getPassable(void) { return passable; }
 
@@ -23,6 +27,7 @@ public:
     inline std::string get_leave_func(void) { return leave_func; }
 protected:
     bool occupied = false;
+    Unit* occupant = NULL;
     symbol displayed;
     std::vector<Item*> items;
     uint8_t move_cost = 1;

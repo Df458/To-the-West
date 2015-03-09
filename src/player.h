@@ -7,6 +7,8 @@ public:
     void update(uint16_t time) final {}
     virtual void draw(WINDOW* window, uint16_t corner);
     void add_message(message mess);
+
+    virtual uint8_t attack(Unit* other);
 protected:
     WINDOW* ui_window;
     PANEL*  ui_panel;

@@ -63,8 +63,17 @@ void Map::update(uint16_t time) {
     }
 
     for(uint8_t j = 0; j < 4; ++j) {
-        for(auto i : unit_list[j])
-            i->update(time);
+        for(auto i = unit_list[j].begin(); i != unit_list[j].end();) {
+            Unit* u = (*i);
+            u->update(time);
+            if(!u->getAlive()) {
+                delete u;
+                auto k = i + 1;
+                unit_list[j].erase(i);
+                i = k;
+            } else
+                ++i;
+        }
     }
 }
 

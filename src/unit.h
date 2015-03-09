@@ -26,6 +26,7 @@ public:
     Unit(void);
     Unit(std::string file);
     Unit(Unit* copy, vec2 pos);
+    virtual ~Unit() {}
 
     virtual void draw(WINDOW* window, uint16_t corner);
     const inline vec2& getPosition(void) const { return position; }
@@ -35,6 +36,10 @@ public:
     virtual void update(uint16_t time);
     inline uint8_t getFaction(void) const { return faction; }
     bool move(vec2 delta);
+    virtual uint8_t attack(Unit* other);
+    void die(void);
+    inline bool getAlive(void) { return alive; }
+    virtual bool should_attack(Unit* other);
 
 protected:
     std::string name;
@@ -43,6 +48,7 @@ protected:
     uint8_t faction = 0;
     bool hostile = true;
     bool controlled = false;
+    bool alive = true;
     std::string create_func;
     std::string die_func;
     std::string move_func;

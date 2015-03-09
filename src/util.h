@@ -17,15 +17,15 @@ extern Map* map;
 extern Player* player;
 
 struct message {
-    message(std::string ntext, uint16_t ncolor) : text(ntext), color(ncolor) {}
+    message(std::string ntext, uint16_t ncolor = 0) : text(ntext), color(ncolor) {}
     std::string text;
     uint16_t color;
 };
 
 struct vec2 {
-    vec2(uint32_t nx = 0, uint32_t ny = 0) : x(nx), y(ny) {}
-    uint32_t x = 0;
-    uint32_t y = 0;
+    vec2(int32_t nx = 0, int32_t ny = 0) : x(nx), y(ny) {}
+    int32_t x = 0;
+    int32_t y = 0;
     vec2 operator+(vec2 rval) { return vec2(x + rval.x, y + rval.y); }
     vec2 operator-(vec2 rval) { return vec2(x - rval.x, y - rval.y); }
     void operator+=(vec2 rval) { x += rval.x; y += rval.y; }
