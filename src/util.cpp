@@ -5,6 +5,7 @@
 #endif
 #include <panel.h>
 #include "util.h"
+#include "player.h"
 
 using namespace std;
 
@@ -27,11 +28,11 @@ std::string get_path(void) {
 #endif
 }
 
-void _error(const char* file, unsigned line, std::string message) {
-    attron(COLOR_PAIR(1));
-    mvprintw(0, 0, ("Error in file " + string(file) + " at line  " + to_string(line) + ": " + message).c_str());
-    attroff(COLOR_PAIR(1));
-    getch();
+void _error(const char* file, unsigned line, std::string mess) {
+    //attron(COLOR_PAIR(1));
+    //mvprintw(0, 0, ("Error in file " + string(file) + " at line  " + to_string(line) + ": " + mess).c_str());
+    //attroff(COLOR_PAIR(1));
+    player->add_message(message("Error in file " + string(file) + " at line  " + to_string(line) + ": " + mess, 1));
 }
 
 void display_help(void) {

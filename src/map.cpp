@@ -134,6 +134,8 @@ Biome::Biome(std::string file) {
         char sym = ' ';
         uint16_t color = 0;
         uint8_t cost = 1;
+        std::string enter = "";
+        std::string leave = "";
 
         if(auto a = i->first_attribute("symbol"))
             sym = a->value()[0];
@@ -143,12 +145,17 @@ Biome::Biome(std::string file) {
             cost = atoi(a->value());
         if(auto a = i->first_attribute("freq"))
             freq = atoi(a->value());
+        if(auto a = i->first_attribute("enter"))
+            enter = a->value();
+        if(auto a = i->first_attribute("leave"))
+            leave = a->value();
 
         symbol s(sym, color);
-        terrains.push_back(Tile(s, cost));
+        terrains.push_back(Tile(s, cost, enter, leave));
         terrain_freqs.push_back(freq);
         freqs += freq;
     }
+
     for(auto i = node->first_node("creature", 8, false); i; i = i->next_sibling("creature", 8, false)) {
         uint16_t freq = 1;
         string type;

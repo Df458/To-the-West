@@ -2,6 +2,7 @@
 #define UTIL_H
 #include <cstdint>
 #include <string>
+#include <vector>
 
 class Player;
 class Map;
@@ -14,6 +15,12 @@ const uint8_t MANY_COLORS = 0b001; // >=256 colors
 extern uint16_t color_flags;
 extern Map* map;
 extern Player* player;
+
+struct message {
+    message(std::string ntext, uint16_t ncolor) : text(ntext), color(ncolor) {}
+    std::string text;
+    uint16_t color;
+};
 
 struct vec2 {
     vec2(uint32_t nx = 0, uint32_t ny = 0) : x(nx), y(ny) {}

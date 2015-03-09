@@ -71,9 +71,9 @@ void Unit::draw(WINDOW* window, uint16_t corner) {
     if(position.x < corner || position.x > corner + 77)
         return;
 
-    attron(COLOR_PAIR(displayed.color_pair));
+    wattron(window, COLOR_PAIR(displayed.color_pair));
     mvwaddch(window, position.y + 1, position.x - corner + 1, displayed.disp);
-    attroff(COLOR_PAIR(displayed.color_pair));
+    wattroff(window, COLOR_PAIR(displayed.color_pair));
 }
 
 void Unit::update(uint16_t time) {
