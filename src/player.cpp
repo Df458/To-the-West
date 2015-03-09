@@ -20,84 +20,36 @@ int Player::get_input(void) {
     char input = getch();
     switch(input) {
         case 'h':
-            if(position.x > 0)
-            {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                --position.x;
-            }
+            move(vec2(-1, 0));
             time_passed = 2 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'j':
-            if(position.y < 17)
-            {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                ++position.y;
-            }
+            move(vec2(0, 1));
             time_passed = 2 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'k':
-            if(position.y > 0)
-            {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                --position.y;
-            }
+            move(vec2(0, -1));
             time_passed = 2 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'l':
-            if(position.x < 2999)
-            {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                ++position.x;
-            }
+            move(vec2(1, 0));
             time_passed = 2 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'y':
-            if(position.x > 0 && position.y > 0) {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                --position.x;
-                --position.y;
-            }
+            move(vec2(-1, -1));
             time_passed = 3 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'u':
-            if(position.x < 2999 && position.y > 0) {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                ++position.x;
-                --position.y;
-            }
+            move(vec2(1, -1));
             time_passed = 3 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'b':
-            if(position.x > 0 && position.y < 17) {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                --position.x;
-                ++position.y;
-            }
+            move(vec2(-1, 1));
             time_passed = 3 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'n':
-            if(position.x < 2999 && position.y < 17) {
-                map->tile_at(position)->call(map->tile_at(position)->get_leave_func());
-                ++position.x;
-                ++position.y;
-            }
+            move(vec2(1, 1));
             time_passed = 3 * map->tile_at(position)->getCost();
-            call(move_func);
-            map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
             break;
         case 'q':
             return -1;

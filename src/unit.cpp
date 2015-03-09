@@ -1,4 +1,5 @@
 #include "unit.h"
+#include "map.h"
 #include <cstring>
 #include <rapidxml.hpp>
 
@@ -21,6 +22,10 @@ Unit::Unit(Unit* copy, vec2 pos) {
     attack_func = copy->attack_func;
     update_func = copy->update_func;
     displayed = copy->displayed;
+
+    map->tile_at(position)->setOccupied(true);
+    map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
+    call(create_func);
 }
 
 Unit::Unit(std::string file) {
@@ -77,7 +82,7 @@ void Unit::draw(WINDOW* window, uint16_t corner) {
 }
 
 void Unit::update(uint16_t time) {
-    // Update here
+    call(update_func);
 }
 
 void Unit::insert(void) {
@@ -85,4 +90,20 @@ void Unit::insert(void) {
     lua_setfield(game_state, -2, "x");
     lua_pushinteger(game_state, position.y);
     lua_setfield(game_state, -2, "y");
+}
+
+bool Unit::move(vec2 delta) {
+    Tile* prev = map->tile_at(position);
+    Tile* next = map->tile_at(position + delta);
+    if(next->getOccupied() || !next->getPassable() || position.x + delta.x < 0 || position.x + delta.x > 2999 || position.y + delta.y < 0 || position.y + delta.y > 17) {
+        return false;
+    }
+
+    prev->call(prev->get_leave_func());
+    prev->setOccupied(false);
+    position += delta;
+    next->call(next->get_enter_func());
+    next->setOccupied(true);
+
+    return true;
 }

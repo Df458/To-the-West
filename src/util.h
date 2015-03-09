@@ -26,6 +26,10 @@ struct vec2 {
     vec2(uint32_t nx = 0, uint32_t ny = 0) : x(nx), y(ny) {}
     uint32_t x = 0;
     uint32_t y = 0;
+    vec2 operator+(vec2 rval) { return vec2(x + rval.x, y + rval.y); }
+    vec2 operator-(vec2 rval) { return vec2(x - rval.x, y - rval.y); }
+    void operator+=(vec2 rval) { x += rval.x; y += rval.y; }
+    void operator-=(vec2 rval) { x -= rval.x; y -= rval.y; }
 };
 
 struct symbol {

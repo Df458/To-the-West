@@ -1,4 +1,5 @@
 #include "map.h"
+#include <cstring>
 #include <string>
 #include <rapidxml.hpp>
 #include "unit.h"
@@ -77,7 +78,7 @@ void Map::spawn(void) {
     }
     x = clamp((int32_t)corner + x, 0, 3000);
     uint16_t y = rand() % 18;
-    if(!biomes[map_data[x][y].getBiome()].get_unit())
+    if(!map_data[x][y].getPassable() || map_data[x][y].getOccupied() || !biomes[map_data[x][y].getBiome()].get_unit())
         return;
     addUnit(new Unit(biomes[map_data[x][y].getBiome()].get_unit(), vec2(x, y)));
 }
@@ -136,6 +137,7 @@ Biome::Biome(std::string file) {
         uint8_t cost = 1;
         std::string enter = "";
         std::string leave = "";
+        bool pass = true;
 
         if(auto a = i->first_attribute("symbol"))
             sym = a->value()[0];
@@ -149,9 +151,11 @@ Biome::Biome(std::string file) {
             enter = a->value();
         if(auto a = i->first_attribute("leave"))
             leave = a->value();
+        if(auto a = i->first_attribute("passable"))
+            pass = strcmp(a->value(), "false");
 
         symbol s(sym, color);
-        terrains.push_back(Tile(s, cost, enter, leave));
+        terrains.push_back(Tile(s, cost, pass, enter, leave));
         terrain_freqs.push_back(freq);
         freqs += freq;
     }

@@ -34,6 +34,7 @@ public:
     inline std::string getName(void) const { return name; }
     virtual void update(uint16_t time);
     inline uint8_t getFaction(void) const { return faction; }
+    bool move(vec2 delta);
 
 protected:
     std::string name;
