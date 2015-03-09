@@ -77,10 +77,6 @@ int Player::get_input(void) {
 void Player::draw(WINDOW* window, uint16_t corner) {
     Unit::draw(window, corner);
 
-    uint16_t j = 0;
-    wclear(ui_window);
-    box(ui_window, 0, 0);
-
     uint16_t hp_color = 2;
     if(statistics.hp / statistics.max_hp < .5f)
         hp_color = 4;
@@ -90,6 +86,14 @@ void Player::draw(WINDOW* window, uint16_t corner) {
     wattron(window, COLOR_PAIR(hp_color));
     mvwprintw(window, 19, 5, (to_string((uint16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
     wattroff(window, COLOR_PAIR(hp_color));
+    draw_messages();
+}
+
+void Player::draw_messages() {
+    wclear(ui_window);
+    box(ui_window, 0, 0);
+
+    uint16_t j = 0;
     for(int32_t i = messages.size() - 1; i >= 0 && j < 9; --i) {
         wattron(ui_window, COLOR_PAIR(messages[i].color));
         mvwprintw(ui_window, 9 - j, 1, messages[i].text.c_str());
@@ -99,7 +103,6 @@ void Player::draw(WINDOW* window, uint16_t corner) {
 }
 
 void Player::add_message(message mess) {
-    // Need to do line breaks here
     while(mess.text.size() > 78) {
         uint16_t i = 78;
         uint offset = 0;
@@ -117,15 +120,32 @@ void Player::add_message(message mess) {
     messages.push_back(mess);
 }
 
-uint8_t Player::attack(Unit* other) {
-    uint8_t res = Unit::attack(other);
-    if(!res)
+combat_result Player::attack(Unit* other) {
+    combat_result res = Unit::attack(other);
+    if(!res.flags)
         add_message(("You miss the " + other->getName() + "."));
-    else if(res & 0b001)
+    else if(res.flags & 0b001)
         add_message(message("You slay the " + other->getName() + "!"));
-    else if(res & 0b010)
-        add_message(message("Your blow glances off the " + other->getName() + "."));
+    else if(res.flags & 0b010)
+        add_message(message("Your blow glances off the " + other->getName() + " for " + to_string(res.damage) + " damage."));
     else
-        add_message(message("You hit the " + other->getName() + "."));
+        add_message(message("You hit the " + other->getName() + " for " + to_string(res.damage) + " damage."));
     return res;
+}
+
+bool Player::should_attack(Unit* other) {
+    if(!Unit::should_attack(other)) {
+        add_message(message("Really attack the " + other->getName() + "? (y/n)", 4));
+        draw_messages();
+        update_panels();
+        doupdate();
+        while(char c = getch()) {
+            if(c == 'y')
+                return true;
+            if(c == 'n')
+                return false;
+        }
+        return false;
+    }
+    return true;
 }

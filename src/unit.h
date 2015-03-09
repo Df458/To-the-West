@@ -36,12 +36,13 @@ public:
     virtual void update(uint16_t time);
     inline uint8_t getFaction(void) const { return faction; }
     bool move(vec2 delta);
-    virtual uint8_t attack(Unit* other);
+    virtual combat_result attack(Unit* other);
     void die(void);
     inline bool getAlive(void) { return alive; }
     virtual bool should_attack(Unit* other);
 
 protected:
+    Unit* target = NULL;
     std::string name;
     vec2 position;
     stats statistics;

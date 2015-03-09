@@ -1,5 +1,5 @@
 <creature name="ram">
     <symbol char="r" color="0"/>
-    <stats hp="35" str="10" spd="7" acc="6" def="4" dog="7"/>
+    <stats hp="35" str="10" spd="7" acc="6" def="12" dog="7"/>
     <ai faction="3" hostile="true"/>
 </creature>

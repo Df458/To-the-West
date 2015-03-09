@@ -38,6 +38,11 @@ struct symbol {
     uint16_t color_pair = 0;
 };
 
+struct combat_result {
+    uint8_t  flags = 0;
+    uint16_t damage = 0;
+};
+
 std::string get_path(void);
 
 void _error(const char* file, unsigned line, std::string message);

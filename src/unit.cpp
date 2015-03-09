@@ -97,7 +97,7 @@ void Unit::insert(void) {
 bool Unit::move(vec2 delta) {
     Tile* prev = map->tile_at(position);
     Tile* next = map->tile_at(position + delta);
-    if(next->getOccupied() || !next->getPassable() || (position.x == 1 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 1 && delta.y < 0) || position.y + delta.y > 17) {
+    if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
         if(next->getOccupied() && should_attack(next->getOccupant()))
             attack(next->getOccupant());
         return false;
@@ -121,24 +121,27 @@ void Unit::die(void) {
     call(die_func);
 }
 
-uint8_t Unit::attack(Unit* other) {
-    uint8_t retval = 0;
+combat_result Unit::attack(Unit* other) {
+    combat_result retval;
+    if(!other)
+        return retval;
+    other->target = this;
     uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
     uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
     if(hit_roll < dodge_roll)
-        return 0;
-    retval += 0b100;
-    uint16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 5, 0, 25);
+        return retval;
+    retval.flags += 0b100;
+    uint16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 3, 0, 25);
     float mod = 1.0f;
     if(hit_roll < block_roll) {
         mod = 0.5f;
-        retval += 0b010;
+        retval.flags += 0b010;
     }
-    float damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2 - 5, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
-    other->statistics.hp -= damage;
+    retval.damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
+    other->statistics.hp -= retval.damage;
     if(other->statistics.hp <= 0) {
         other->die();
-        retval += 0b001;
+        retval.flags += 0b001;
     }
     return retval;
 }
@@ -146,6 +149,17 @@ uint8_t Unit::attack(Unit* other) {
 bool Unit::should_attack(Unit* other) {
     if(!other)
         return false;
-    // Do this based on faction later, and overload for player
+    if(other->target == this)
+        return true;
+    switch(faction) {
+        case 0:
+            return other->faction == 1 || other->faction == 2;
+        case 1:
+            return other->faction == 0;
+        case 2:
+            return other->faction == 0 || other->faction == 3;
+        case 3:
+            return other->faction == 2;
+    }
     return true;
 }
