@@ -84,18 +84,21 @@ void Unit::draw(WINDOW* window, uint16_t corner) {
     wattroff(window, COLOR_PAIR(displayed.color_pair));
 }
 
-void Unit::update(uint16_t time) {
+void Unit::update(uint16_t t) {
     if(!alive)
         return;
 
-    call(update_func);
+    time += t;
 
-    if(!target) {
-        //target = player;
-    }
-    else {
-        vec2 dist = position - target->position;
-        move(step(dist));
+    call(update_func);
+    while(time > 0) {
+        if(!target) {
+            // Get a target
+            time = 0;
+        } else {
+            vec2 dist = position - target->position;
+            move(step(dist));
+        }
     }
 }
 
@@ -114,6 +117,8 @@ bool Unit::move(vec2 delta) {
             combat_result res = attack(next->getOccupant());
             if(next->getOccupant() == player)
                 player->attacked(res, this);
+        } else {
+            time = 0;
         }
         return false;
     }
@@ -126,6 +131,11 @@ bool Unit::move(vec2 delta) {
     next->setOccupied(true);
     next->setOccupant(this);
 
+    if(abs(delta.x) + abs(delta.y) == 2)
+        time -= 3 * next->getCost();
+    else
+        time -= 2 * next->getCost();;
+
     return true;
 }
 
@@ -137,6 +147,7 @@ void Unit::die(void) {
 }
 
 combat_result Unit::attack(Unit* other) {
+    time -= 5;
     combat_result retval;
     if(!other)
         return retval;
@@ -144,12 +155,15 @@ combat_result Unit::attack(Unit* other) {
         other->target = this;
     uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
     uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
-    if(hit_roll < dodge_roll)
+    if(hit_roll < dodge_roll) {
+        time -= 2;
         return retval;
+    }
     retval.flags += 0b100;
     uint16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 3, 0, 25);
     float mod = 1.0f;
     if(hit_roll < block_roll) {
+        time--;
         mod = 0.5f;
         retval.flags += 0b010;
     }

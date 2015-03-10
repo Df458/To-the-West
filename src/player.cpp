@@ -27,40 +27,40 @@ Player::Player(void) : Unit() {
 }
 
 int Player::get_input(void) {
-    int time_passed = 0;
+    time = 0;
     char input = getch();
     switch(input) {
         case 'h':
             move(vec2(-1, 0));
-            time_passed = 2 * map->tile_at(position)->getCost();
+            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'j':
             move(vec2(0, 1));
-            time_passed = 2 * map->tile_at(position)->getCost();
+            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'k':
             move(vec2(0, -1));
-            time_passed = 2 * map->tile_at(position)->getCost();
+            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'l':
             move(vec2(1, 0));
-            time_passed = 2 * map->tile_at(position)->getCost();
+            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'y':
             move(vec2(-1, -1));
-            time_passed = 3 * map->tile_at(position)->getCost();
+            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'u':
             move(vec2(1, -1));
-            time_passed = 3 * map->tile_at(position)->getCost();
+            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'b':
             move(vec2(-1, 1));
-            time_passed = 3 * map->tile_at(position)->getCost();
+            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'n':
             move(vec2(1, 1));
-            time_passed = 3 * map->tile_at(position)->getCost();
+            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'q':
             return -1;
@@ -71,7 +71,7 @@ int Player::get_input(void) {
             break;
     }
 
-    return time_passed;
+    return -time;
 }
 
 void Player::draw(WINDOW* window, uint16_t corner) {

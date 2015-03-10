@@ -5,4 +5,5 @@
     <tile symbol='"' color="2" cost="3" freq="1"/>
     <tile symbol="o" color="0" cost="5" freq="1"/>
     <creature type="serpent" freq="1"/>
+    <creature type="vulture" freq="1"/>
 </biome>

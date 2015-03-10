@@ -4,7 +4,7 @@ class Player : public Unit {
 public:
     Player(void);
     int get_input(void);
-    void update(uint16_t time) final {}
+    void update(uint16_t time) final { time = 0; }
     virtual void draw(WINDOW* window, uint16_t corner);
     void draw_messages(void);
     void add_message(message mess);

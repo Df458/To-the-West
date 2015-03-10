@@ -93,7 +93,7 @@ void Map::spawn(void) {
     if((rand() % 3 != 0 || corner > 2807) && corner > 35) {
         x = rand() % 25 - 50;
     } else {
-        x = rand() % 25 + 25;
+        x = rand() % 25 + 105;
     }
     x = clamp((int32_t)corner + x, 0, 3000);
     uint16_t y = rand() % 18;

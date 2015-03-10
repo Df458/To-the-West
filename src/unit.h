@@ -39,6 +39,7 @@ public:
     virtual combat_result attack(Unit* other);
     void die(void);
     inline bool getAlive(void) { return alive; }
+    inline int8_t getTime() { return time; }
     virtual bool should_attack(Unit* other);
 
 protected:
@@ -47,6 +48,7 @@ protected:
     vec2 position;
     stats statistics;
     uint8_t faction = 0;
+    int16_t time = 0;
     bool hostile = true;
     bool controlled = false;
     bool alive = true;
