@@ -39,6 +39,7 @@ public:
     void generate(void);
     void spawn(void);
     inline Tile* tile_at(vec2 position) { return map_data[position.x][position.y]; }
+    Unit* getTarget(vec2 position, uint8_t faction);
 
 protected:
     Unit* active_unit;

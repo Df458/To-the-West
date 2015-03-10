@@ -17,13 +17,13 @@ Player::Player(void) : Unit() {
     ui_window = newwin(11, 80, 20, 0);
     ui_panel = new_panel(ui_window);
 
-    statistics.max_hp = 12;
-    statistics.hp = 12;
-    statistics.accuracy = 10;
-    statistics.strength = 12;
-    statistics.defense = 12;
-    statistics.dodge = 12;
-    statistics.speed = 12;
+    statistics.max_hp = 25;
+    statistics.hp = 25;
+    statistics.accuracy = 17;
+    statistics.strength = 18;
+    statistics.defense = 16;
+    statistics.dodge = 14;
+    statistics.speed = 15;
 }
 
 int Player::get_input(void) {

@@ -1,7 +1,7 @@
 <map>
     <biome type="woods" freq="5"/>
     <biome type="desert" freq="2"/>
-    <biome type="plains" freq="6"/>
+    <biome type="plains" freq="12"/>
     <biome type="river" freq="2"/>
     <biome type="mountain" freq="3"/>
 </map>

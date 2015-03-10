@@ -65,26 +65,26 @@ void Map::update(uint16_t time) {
     }
 
     for(uint8_t j = 0; j < 4; ++j) {
-        for(auto i = unit_list[j].begin(); i != unit_list[j].end();) {
-            Unit* u = (*i);
-            if(!u) {
-                error("Weird. This shouldn't happen.");
-                auto k = i + 1;
-                unit_list[j].erase(i);
-                i = k;
-            }
+        for(auto i = 0; i < unit_list[j].size(); ++i) {
+            Unit* u = unit_list[j][i];
+            //if(!u) {
+                //error("Weird. This shouldn't happen.");
+                //auto k = i + 1;
+                //unit_list[j].erase(i);
+                //i = k;
+                //continue;
+            //}
             u->update(time);
-            if(!u->getAlive()) {
+            if(!u->getAlive() || !u) {
                 if(u == player) {
                     u->setTime(-1);
                     return;
                 }
-                delete u;
-                auto k = i + 1;
-                unit_list[j].erase(i);
-                i = k;
-            } else
-                ++i;
+                if(u)
+                    delete u;
+                unit_list[j].erase(unit_list[j].begin() + i);
+                continue;
+            }
         }
     }
 }
@@ -138,6 +138,39 @@ void Map::generate(void) {
         }
         pos = end;
     }
+}
+
+Unit* Map::getTarget(vec2 position, uint8_t faction) {
+    vector<Unit*>* list;
+    switch(faction) {
+        case 0: {
+            uint8_t r = rand() % 2 + 1;
+            list = &unit_list[r];
+            } break;
+        case 1:
+            list = &unit_list[0];
+            break;
+        case 2: {
+            uint8_t r = rand() % 2 * 3;
+            list = &unit_list[r];
+            } break;
+        case 3:
+            list = &unit_list[2];
+            break;
+        default:
+            return NULL;
+    }
+
+    if(!list)
+        return NULL;
+
+    for(uint32_t i = 0; i < list->size(); ++i) {
+        if(abs(position.x - list->at(i)->getPosition().x) < 20) {
+            return list->at(i);
+        }
+    }
+
+    return NULL;
 }
 
 Biome::Biome(std::string file) {

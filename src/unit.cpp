@@ -95,12 +95,19 @@ void Unit::update(uint16_t t) {
         if(!target && hostile) {
             if((faction == 1 || faction == 2) && abs(position.x - player->position.x) < 40)
                 target = player;
-
-            time = 0;
-        } else {
+            else if((target = map->getTarget(position, faction))) {
+            
+            } else
+                time = 0;
+        } else if(target){
             vec2 dist = position - target->position;
-            move(step(dist));
-        }
+            if(abs(dist.x) > 50 || !target->getAlive()) {
+                target = NULL;
+                time = 0;
+            } else
+                move(step(dist));
+        } else
+            time = 0;
     }
 }
 
@@ -173,6 +180,8 @@ combat_result Unit::attack(Unit* other) {
     retval.damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
     other->statistics.hp -= retval.damage;
     if(other->statistics.hp <= 0) {
+        if(target == other)
+            target = NULL;
         other->die();
         retval.flags += 0b001;
     }
