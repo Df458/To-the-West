@@ -16,10 +16,21 @@ public:
 
         if(statistics.xp >= statistics.max_xp)
             level_up();
+        if(statistics.hp <= 0) {
+            statistics.hp = 0;
+            add_message(message("You succumb to your wounds", 8));
+            add_message(message("And so, your quest comes to a tragic end..."));
+            draw_messages();
+            update_panels();
+            doupdate();
+            getch();
+            exit(0);
+        }
     }
     virtual void draw(WINDOW* window, uint16_t corner);
     void draw_messages(void);
     void add_message(message mess);
+    bool ask_question(message mess);
     void attacked(combat_result res, Unit* other);
     virtual void level_up(void);
 

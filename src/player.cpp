@@ -155,6 +155,20 @@ void Player::add_message(message mess) {
     //doupdate();
 }
 
+bool Player::ask_question(message mess) {
+    mess.text += " (y/n)";
+    add_message(mess);
+    draw_messages();
+    update_panels();
+    doupdate();
+    while(char c = getch())
+        if(c == 'y')
+            return true;
+        else if(c == 'n')
+            return false;
+    return false;
+}
+
 combat_result Player::attack(Unit* other) {
     combat_result res = Unit::attack(other);
     if(!res.flags)

@@ -15,6 +15,7 @@ Map* map;
 uint8_t COLOR_LIGHTGREEN = 10;
 uint8_t COLOR_LIGHTBLUE  = 12;
 uint8_t COLOR_BROWN = 17;
+uint8_t COLOR_GRAY = 8;
 
 bool start_menu() {
     WINDOW* menu_window = newwin(20, 80, 0, 0);
@@ -95,6 +96,7 @@ int main(int argc, char* argv[]) {
         if(COLORS == 8) {
             COLOR_LIGHTGREEN = COLOR_GREEN;
             COLOR_LIGHTBLUE = COLOR_BLUE;
+            COLOR_GRAY = COLOR_WHITE;
         }
         color_flags += BASIC_COLORS;
         init_pair(1, COLOR_RED, COLOR_WHITE); // Error color
@@ -110,6 +112,7 @@ int main(int argc, char* argv[]) {
         init_pair(12, COLOR_YELLOW,     COLOR_BLACK); // Brown on black
         init_pair(13, COLOR_BLACK,      COLOR_WHITE); // White on black
         init_pair(14, COLOR_BLACK,      COLOR_RED); // White on black
+        init_pair(15, COLOR_GRAY,         COLOR_BLACK);
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {

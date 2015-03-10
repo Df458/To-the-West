@@ -24,3 +24,11 @@ int lua_message(lua_State* ls) {
     player->add_message(message(lua_tostring(ls, 1), color));
     return 0;
 }
+
+int lua_ask(lua_State* ls) {
+    int color = 0;
+    if(lua_gettop(ls) > 1)
+        color = lua_tointeger(ls, 2);
+    lua_pushboolean(ls, player->ask_question(message(lua_tostring(ls, 1), color)));
+    return 1;
+}
