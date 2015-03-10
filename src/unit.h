@@ -59,6 +59,7 @@ protected:
     std::string move_func;
     std::string attack_func;
     std::string update_func;
+    int16_t regen_timer;
     symbol displayed;
 };
 #endif

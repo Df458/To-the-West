@@ -8,11 +8,13 @@ using namespace std;
 using namespace rapidxml;
 
 Unit::Unit(void) {
+    regen_timer = 20;
 }
 
 Unit::Unit(Unit* copy, vec2 pos) {
     if(!copy)
         return;
+    regen_timer = 20;
     name = copy->name;
     position = pos;
     statistics = copy->statistics;
@@ -95,6 +97,14 @@ void Unit::update(uint16_t t) {
     if(!alive)
         return;
 
+    regen_timer -= t;
+    if(regen_timer <= 0) {
+        regen_timer = 20;
+        statistics.hp++;
+    }
+    if(statistics.hp > statistics.max_hp)
+        statistics.hp = statistics.max_hp;
+
     time += t;
 
     call(update_func);
@@ -104,8 +114,9 @@ void Unit::update(uint16_t t) {
                 target = player;
             else if((target = map->getTarget(position, faction))) {
             
-            } else
-                time = 0;
+            } else {
+                move(vec2(rand() % 3 - 1, rand() % 3 - 1));
+            }
         } else if(target){
             vec2 dist = position - target->position;
             if(abs(dist.x) > 50 || !target->getAlive()) {
@@ -114,7 +125,7 @@ void Unit::update(uint16_t t) {
             } else
                 move(step(dist));
         } else
-            time = 0;
+            move(vec2(rand() % 3 - 1, rand() % 3 - 1));
     }
 }
 

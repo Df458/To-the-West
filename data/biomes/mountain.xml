@@ -1,9 +1,9 @@
 <biome size="60" variance="35" spread="25">
     <tile symbol=',' color="4" cost="1" freq="5"/>
     <tile symbol='t' color="3" cost="2" freq="2"/>
-    <tile symbol='o' color="13" cost="5" freq="25" leave="trip.lua"/>
-    <tile symbol='#' color="13" cost="1" freq="25" passable="false"/>
-    <tile symbol='.' color="13" cost="3" freq="78"/>
+    <tile symbol='o' color="0" cost="5" freq="25" leave="trip.lua"/>
+    <tile symbol='#' color="0" cost="1" freq="25" passable="false"/>
+    <tile symbol='.' color="0" cost="3" freq="78"/>
     <tile symbol='.' color="3" cost="1" freq="50"/>
     <creature type="eagle" freq="20"/>
     <creature type="mountaindwarf" freq="14"/>

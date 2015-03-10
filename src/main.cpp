@@ -97,18 +97,19 @@ int main(int argc, char* argv[]) {
             COLOR_LIGHTBLUE = COLOR_BLUE;
         }
         color_flags += BASIC_COLORS;
-        init_pair(1, COLOR_WHITE, COLOR_RED); // Error color
-        init_pair(2, COLOR_BLACK, COLOR_LIGHTGREEN); // Green on black
-        init_pair(4, COLOR_BLACK, COLOR_YELLOW); // Yellow on black
-        init_pair(3, COLOR_BLACK, COLOR_YELLOW); // Brown on black
-        init_pair(5, COLOR_BLACK, COLOR_GREEN); // Dark Green on black
-        init_pair(6, COLOR_BLACK, COLOR_LIGHTBLUE);
-        init_pair(7, COLOR_BLACK, COLOR_BLUE);
-        init_pair(8, COLOR_RED, COLOR_BLACK);
+        init_pair(1, COLOR_RED, COLOR_WHITE); // Error color
+        init_pair(2, COLOR_LIGHTGREEN,  COLOR_BLACK); // Green on black
+        init_pair(4, COLOR_YELLOW,      COLOR_BLACK); // Yellow on black
+        init_pair(3, COLOR_YELLOW,      COLOR_BLACK); // Brown on black
+        init_pair(5, COLOR_GREEN,       COLOR_BLACK); // Dark Green on black
+        init_pair(6, COLOR_LIGHTBLUE,   COLOR_BLACK);
+        init_pair(7, COLOR_BLUE,        COLOR_BLACK);
+        init_pair(8, COLOR_RED,         COLOR_BLACK);
         init_pair(10, COLOR_LIGHTGREEN, COLOR_BLACK); // Green on black
-        init_pair(11, COLOR_YELLOW, COLOR_BLACK); // Yellow on black
-        init_pair(12, COLOR_YELLOW, COLOR_BLACK); // Brown on black
-        init_pair(13, COLOR_BLACK, COLOR_WHITE); // White on black
+        init_pair(11, COLOR_YELLOW,     COLOR_BLACK); // Yellow on black
+        init_pair(12, COLOR_YELLOW,     COLOR_BLACK); // Brown on black
+        init_pair(13, COLOR_BLACK,      COLOR_WHITE); // White on black
+        init_pair(14, COLOR_BLACK,      COLOR_RED); // White on black
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {
@@ -117,8 +118,8 @@ int main(int argc, char* argv[]) {
             init_color(COLOR_RED, 975, 80, 0);
             init_color(COLOR_WHITE, 900, 900, 900);
             init_color(COLOR_BROWN, 600, 300, 50);
-            init_pair(3, COLOR_BLACK, COLOR_BROWN); // Brown on black
-            init_pair(12, COLOR_BROWN, COLOR_BLACK); // Brown on black
+            init_pair(3, COLOR_BROWN, COLOR_BLACK); // Brown on black
+            init_pair(12, COLOR_BLACK, COLOR_BROWN); // Brown on black
         }
     }
 

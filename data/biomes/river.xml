@@ -2,11 +2,11 @@
     <tile symbol='~' color="6" cost="5" freq="80"/>
     <tile symbol='=' color="6" cost="5" freq="80"/>
     <tile symbol='-' color="6" cost="5" freq="80"/>
-    <tile symbol="~" color="13" cost="5" freq="40"/>
-    <tile symbol='=' color="13" cost="5" freq="40"/>
-    <tile symbol='-' color="13" cost="5" freq="40"/>
+    <tile symbol="~" color="0" cost="5" freq="40"/>
+    <tile symbol='=' color="0" cost="5" freq="40"/>
+    <tile symbol='-' color="0" cost="5" freq="40"/>
     <tile symbol="~" color="7" cost="5" freq="80"/>
     <tile symbol='=' color="7" cost="5" freq="80"/>
     <tile symbol='-' color="7" cost="5" freq="80"/>
-    <tile symbol="o" color="13" cost="5" freq="3" passable="false"/>
+    <tile symbol="o" color="0" cost="5" freq="3" passable="false"/>
 </biome>
