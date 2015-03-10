@@ -6,6 +6,7 @@
     <tile symbol='.' color="13" cost="3" freq="78"/>
     <tile symbol='.' color="3" cost="1" freq="50"/>
     <creature type="eagle" freq="20"/>
-    <creature type="mountaindwarf" freq="10"/>
+    <creature type="mountaindwarf" freq="14"/>
     <creature type="golem" freq="1"/>
+    <creature type="brigand" freq="10"/>
 </biome>

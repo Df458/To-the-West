@@ -1,0 +1,5 @@
+<creature name="brigand">
+    <symbol char="@" color="12"/>
+    <stats hp="20" str="17" spd="14" acc="8" def="8" dog="12"/>
+    <ai faction="1" aggressive="true"/>
+</creature>

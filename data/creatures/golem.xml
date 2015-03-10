@@ -3,4 +3,3 @@
     <stats hp="90" str="22" spd="1" acc="6" def="22" dog="1"/>
     <ai faction="1" aggressive="true"/>
 </creature>
-
