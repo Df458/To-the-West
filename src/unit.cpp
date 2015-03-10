@@ -92,8 +92,10 @@ void Unit::update(uint16_t t) {
 
     call(update_func);
     while(time > 0) {
-        if(!target) {
-            // Get a target
+        if(!target && hostile) {
+            if((faction == 1 || faction == 2) && abs(position.x - player->position.x) < 40)
+                target = player;
+
             time = 0;
         } else {
             vec2 dist = position - target->position;
