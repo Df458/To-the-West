@@ -1,5 +1,6 @@
 #include "player.h"
 #include "map.h"
+#include <cmath>
 #include "util.h"
 #include <curses.h>
 #include <string>
@@ -16,6 +17,8 @@ Player::Player(void) : Unit() {
 
     ui_window = newwin(11, 80, 20, 0);
     ui_panel = new_panel(ui_window);
+    stats_window = newwin(20, 40, 0, 40);
+    box(stats_window, 0, 0);
 
     statistics.max_hp = 25;
     statistics.hp = 25;
@@ -62,8 +65,26 @@ int Player::get_input(void) {
             move(vec2(1, 1));
             //time_passed = 3 * map->tile_at(position)->getCost();
             break;
+        case 's':
+            stats_panel = new_panel(stats_window);
+            update_panels();
+            doupdate();
+            getch();
+            del_panel(stats_panel);
+            update_panels();
+            doupdate();
+            break;
         case 'q':
-            return -1;
+            add_message(message("Really quit? (y/n)", 4));
+            draw_messages();
+            update_panels();
+            doupdate();
+            while(char c = getch()) {
+                if(c == 'y')
+                    return -1;
+                if(c == 'n')
+                    break;
+            }
         break;
         case '?':
             display_help();
@@ -86,6 +107,17 @@ void Player::draw(WINDOW* window, uint16_t corner) {
     wattron(window, COLOR_PAIR(hp_color));
     mvwprintw(window, 19, 5, (to_string((uint16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
     wattroff(window, COLOR_PAIR(hp_color));
+
+    wclear(stats_window);
+    box(stats_window, 0, 0);
+    mvwprintw(stats_window, 2, 1, ("Level:     " + to_string(statistics.level)).c_str());
+    mvwprintw(stats_window, 4, 1, ("Health:    " + to_string((int)statistics.max_hp)).c_str());
+    mvwprintw(stats_window, 6, 1, ("Strength:  " + to_string(statistics.strength)).c_str());
+    mvwprintw(stats_window, 8, 1, ("Defense:   " + to_string(statistics.defense)).c_str());
+    mvwprintw(stats_window, 10, 1, ("Dodge:     " + to_string(statistics.dodge)).c_str());
+    mvwprintw(stats_window, 12, 1, ("Speed:     " + to_string(statistics.speed)).c_str());
+    mvwprintw(stats_window, 14, 1, ("XP:        " + to_string(statistics.xp) + "/" + to_string(statistics.max_xp)).c_str());
+
     draw_messages();
 }
 
@@ -118,9 +150,9 @@ void Player::add_message(message mess) {
     }
 
     messages.push_back(mess);
-    draw_messages();
-    update_panels();
-    doupdate();
+    //draw_messages();
+    //update_panels();
+    //doupdate();
 }
 
 combat_result Player::attack(Unit* other) {
@@ -171,4 +203,46 @@ bool Player::should_attack(Unit* other) {
         return false;
     }
     return true;
+}
+
+void Player::level_up(void) {
+    wclear(stats_window);
+    box(stats_window, 0, 0);
+    mvwprintw(stats_window, 2, 1, ("Level:     " + to_string(statistics.level)).c_str());
+    mvwprintw(stats_window, 4, 1, ("Health:    " + to_string((int)statistics.max_hp)).c_str());
+    mvwprintw(stats_window, 6, 1, ("Strength:  " + to_string(statistics.strength)).c_str());
+    mvwprintw(stats_window, 8, 1, ("Defense:   " + to_string(statistics.defense)).c_str());
+    mvwprintw(stats_window, 10, 1, ("Dodge:     " + to_string(statistics.dodge)).c_str());
+    mvwprintw(stats_window, 12, 1, ("Speed:     " + to_string(statistics.speed)).c_str());
+    statistics.xp = 0;
+    statistics.level++;
+
+    statistics.hp += 5;
+    statistics.max_hp += 5;
+    statistics.strength += 2;
+    statistics.defense += 2;
+    statistics.dodge += 2;
+    statistics.speed += 2;
+
+    statistics.max_xp = pow(10, (float)statistics.level / 3) * statistics.level + 15;
+
+    wattron(stats_window, A_BLINK | COLOR_PAIR(6));
+    mvwprintw(stats_window, 1, 15, "Level Up!");
+    wattroff(stats_window, A_BLINK);
+    mvwprintw(stats_window, 2, 15, (">> " + to_string(statistics.level)).c_str());
+    mvwprintw(stats_window, 4, 15, (">> " + to_string((int)statistics.max_hp)).c_str());
+    mvwprintw(stats_window, 6, 15, (">> " + to_string(statistics.strength)).c_str());
+    mvwprintw(stats_window, 8, 15, (">> " + to_string(statistics.defense)).c_str());
+    mvwprintw(stats_window, 10, 15, (">> " + to_string(statistics.dodge)).c_str());
+    mvwprintw(stats_window, 12, 15, (">> " + to_string(statistics.speed)).c_str());
+    wattroff(stats_window, COLOR_PAIR(6));
+    mvwprintw(stats_window, 14, 1, ("XP:        " + to_string(statistics.xp) + "/" + to_string(statistics.max_xp)).c_str());
+    
+    stats_panel = new_panel(stats_window);
+    update_panels();
+    doupdate();
+    getch();
+    del_panel(stats_panel);
+    update_panels();
+    doupdate();
 }

@@ -19,6 +19,11 @@ struct stats {
     uint16_t defense = 1;
     uint16_t dodge = 1;
     uint16_t speed = 1;
+
+    uint16_t level = 1;
+    uint16_t xp = 0;
+    uint16_t max_xp = 25;
+    uint16_t xp_value = 0;
 };
 
 class Unit : public LuaObject {
@@ -43,6 +48,7 @@ public:
     inline int16_t getTime() { return time; }
     inline void setTime(int16_t t) { time = t; }
     virtual bool should_attack(Unit* other);
+    void level_up(void);
 
 protected:
     Unit* target = NULL;

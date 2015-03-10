@@ -1,6 +1,6 @@
 <creature name="sheep">
     <symbol char="r" color="13"/>
-    <stats hp="25" str="6" spd="6" acc="8" def="8" dog="5"/>
+    <stats hp="25" str="6" spd="6" acc="8" def="8" dog="5" value="10"/>
     <ai faction="3" hostile="false"/>
     <corpse edible="true" food="25"/>
 </creature>

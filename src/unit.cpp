@@ -2,6 +2,7 @@
 #include "map.h"
 #include "player.h"
 #include <cstring>
+#include <cmath>
 #include <rapidxml.hpp>
 
 using namespace std;
@@ -64,6 +65,8 @@ Unit::Unit(std::string file) {
             statistics.dodge = atoi(a->value());
         if(auto a = n->first_attribute("acc"))
             statistics.accuracy = atoi(a->value());
+        if(auto a = n->first_attribute("value"))
+            statistics.xp_value = atoi(a->value());
         statistics.hp = statistics.max_hp;
     }
     
@@ -106,6 +109,9 @@ void Unit::update(uint16_t t) {
         statistics.hp = statistics.max_hp;
 
     time += t;
+
+    if(statistics.xp >= statistics.max_xp)
+        level_up();
 
     call(update_func);
     while(time > 0) {
@@ -258,6 +264,7 @@ combat_result Unit::attack(Unit* other) {
         if(target == other)
             target = NULL;
         other->die();
+        statistics.xp += other->statistics.xp_value;
         retval.flags += 0b001;
     }
     return retval;
@@ -279,4 +286,18 @@ bool Unit::should_attack(Unit* other) {
             return other->faction == 2;
     }
     return true;
+}
+
+void Unit::level_up(void) {
+    statistics.xp = 0;
+    statistics.level++;
+
+    statistics.hp += 5;
+    statistics.max_hp += 5;
+    statistics.strength += 2;
+    statistics.defense += 2;
+    statistics.dodge += 2;
+    statistics.speed += 2;
+
+    statistics.max_xp = pow(10, (float)(statistics.level < 3 ? 3 : statistics.level) / 3) * statistics.level+ 15;
 }

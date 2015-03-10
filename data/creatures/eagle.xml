@@ -1,5 +1,5 @@
 <creature name="eagle">
     <symbol char="v" color="12"/>
-    <stats hp="15" str="10" spd="15" acc="17" def="1" dog="17"/>
+    <stats hp="15" str="10" spd="15" acc="17" def="1" dog="17" value="10"/>
     <ai faction="3"/>
 </creature>
