@@ -65,15 +65,8 @@ void Map::update(uint16_t time) {
     }
 
     for(uint8_t j = 0; j < 4; ++j) {
-        for(auto i = 0; i < unit_list[j].size(); ++i) {
+        for(uint16_t i = 0; i < unit_list[j].size(); ++i) {
             Unit* u = unit_list[j][i];
-            //if(!u) {
-                //error("Weird. This shouldn't happen.");
-                //auto k = i + 1;
-                //unit_list[j].erase(i);
-                //i = k;
-                //continue;
-            //}
             u->update(time);
             if(!u->getAlive() || !u) {
                 if(u == player) {

@@ -72,6 +72,13 @@ Unit::Unit(std::string file) {
             hostile = strcmp(a->value(), "false");
     }
 
+    for(auto n = node->first_node("script"); n; n = n->next_sibling("script")) {
+        if(auto at = n->first_attribute("type")) {
+            if(!strcmp(at->value(), "update"))
+                update_func = n->first_attribute("id")->value();
+        }
+    }
+
     delete[] data;
 }
 
@@ -116,6 +123,63 @@ void Unit::insert(void) {
     lua_setfield(game_state, -2, "x");
     lua_pushinteger(game_state, position.y);
     lua_setfield(game_state, -2, "y");
+
+    lua_pushnumber(game_state, statistics.hp);
+    lua_setfield(game_state, -2, "hp");
+    lua_pushnumber(game_state, statistics.max_hp);
+    lua_setfield(game_state, -2, "hp_max");
+    lua_pushinteger(game_state, statistics.strength);
+    lua_setfield(game_state, -2, "str");
+    lua_pushinteger(game_state, statistics.accuracy);
+    lua_setfield(game_state, -2, "acc");
+    lua_pushinteger(game_state, statistics.defense);
+    lua_setfield(game_state, -2, "def");
+    lua_pushinteger(game_state, statistics.dodge);
+    lua_setfield(game_state, -2, "dog");
+    lua_pushinteger(game_state, statistics.speed);
+    lua_setfield(game_state, -2, "spd");
+
+    lua_pushboolean(game_state, target == player);
+    lua_setfield(game_state, -2, "targeting_player");
+    lua_pushstring(game_state, name.c_str());
+    lua_setfield(game_state, -2, "name");
+    lua_pushinteger(game_state, faction);
+    lua_setfield(game_state, -2, "faction");
+    lua_pushinteger(game_state, time);
+    lua_setfield(game_state, -2, "time");
+    lua_pushboolean(game_state, alive);
+    lua_setfield(game_state, -2, "alive");
+    lua_pushboolean(game_state, hostile);
+    lua_setfield(game_state, -2, "hostile");
+    lua_pushboolean(game_state, controlled);
+    lua_setfield(game_state, -2, "controlled");
+}
+
+void Unit::retrieve(void) {
+    lua_getfield(game_state, -1, "hp");
+    statistics.hp = lua_tonumber(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "hp_max");
+    statistics.max_hp = lua_tonumber(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "str");
+    statistics.strength = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "acc");
+    statistics.accuracy = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "def");
+    statistics.defense = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "dog");
+    statistics.dodge = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "spd");
+    statistics.speed = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
+    lua_getfield(game_state, -1, "time");
+    time = lua_tointeger(game_state, -1);
+    lua_pop(game_state, 1);
 }
 
 bool Unit::move(vec2 delta) {
@@ -133,11 +197,11 @@ bool Unit::move(vec2 delta) {
         return false;
     }
 
-    prev->call(prev->get_leave_func());
+    /*prev->*/call(prev->get_leave_func());
     prev->setOccupied(false);
     prev->setOccupant(NULL);
     position += delta;
-    next->call(next->get_enter_func());
+    /*next->*/call(next->get_enter_func());
     next->setOccupied(true);
     next->setOccupant(this);
 

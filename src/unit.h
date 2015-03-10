@@ -32,6 +32,7 @@ public:
     const inline vec2& getPosition(void) const { return position; }
     virtual void created(void) { call(create_func); }
     virtual void insert(void);
+    virtual void retrieve(void);
     inline std::string getName(void) const { return name; }
     virtual void update(uint16_t time);
     inline uint8_t getFaction(void) const { return faction; }
