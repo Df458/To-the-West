@@ -77,9 +77,9 @@ int Player::get_input(void) {
 void Player::draw(WINDOW* window, uint16_t corner) {
     Unit::draw(window, corner);
 
-    uint16_t hp_color = 2;
-    if(statistics.hp / statistics.max_hp < .5f)
-        hp_color = 4;
+    uint16_t hp_color = 10;
+    if(statistics.hp / statistics.max_hp < .5f && statistics.hp / statistics.max_hp >= .25f)
+        hp_color = 11;
     else if(statistics.hp / statistics.max_hp < .25f)
         hp_color = 8;
     mvwprintw(window, 19, 1, "HP: ");
@@ -118,6 +118,9 @@ void Player::add_message(message mess) {
     }
 
     messages.push_back(mess);
+    draw_messages();
+    update_panels();
+    doupdate();
 }
 
 combat_result Player::attack(Unit* other) {
@@ -136,7 +139,8 @@ combat_result Player::attack(Unit* other) {
 void Player::attacked(combat_result res, Unit* other) {
     if(!res.flags)
         add_message(("The " + other->getName() + " misses."));
-    else if(res.flags & 0b001) {
+    else if(res.flags & 0b001 || alive == false) {
+        statistics.hp = 0;
         add_message(message("The " + other->getName() + " strikes a killing blow!", 8));
         add_message(message("And so, your quest comes to a tragic end..."));
         draw_messages();
@@ -145,9 +149,9 @@ void Player::attacked(combat_result res, Unit* other) {
         getch();
         exit(0);
     } else if(res.flags & 0b010)
-        add_message(message("The " + other->getName() +  "'s blow glances off your armor for " + to_string(res.damage) + " damage.", 4));
+        add_message(message("The " + other->getName() +  "'s blow glances off your armor for " + to_string(res.damage) + " damage.", 11));
     else
-        add_message(message("The " + other->getName() + " hits you for " + to_string(res.damage) + " damage.", 4));
+        add_message(message("The " + other->getName() + " hits you for " + to_string(res.damage) + " damage.", 11));
 }
 
 bool Player::should_attack(Unit* other) {

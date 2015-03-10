@@ -114,8 +114,9 @@ bool Unit::move(vec2 delta) {
     Tile* next = map->tile_at(position + delta);
     if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
         if(next->getOccupied() && should_attack(next->getOccupant())) {
-            combat_result res = attack(next->getOccupant());
-            if(next->getOccupant() == player)
+            Unit* hit = next->getOccupant();
+            combat_result res = attack(hit);
+            if(hit == player)
                 player->attacked(res, this);
         } else {
             time = 0;

@@ -1,5 +1,5 @@
 <creature name="mountain dwarf">
-    <symbol char="h" color="3"/>
+    <symbol char="h" color="12"/>
     <stats hp="45" str="18" spd="6" acc="14" def="19" dog="10"/>
     <ai faction="0"/>
 </creature>

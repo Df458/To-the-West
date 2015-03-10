@@ -39,7 +39,8 @@ public:
     virtual combat_result attack(Unit* other);
     void die(void);
     inline bool getAlive(void) { return alive; }
-    inline int8_t getTime() { return time; }
+    inline int16_t getTime() { return time; }
+    inline void setTime(int16_t t) { time = t; }
     virtual bool should_attack(Unit* other);
 
 protected:

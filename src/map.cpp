@@ -41,6 +41,7 @@ void Map::addUnit(Unit* unit) {
 }
 
 void Map::draw(void) {
+    box(map_window, 0, 0);
     uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 2922);
     for(uint16_t i = corner; i < corner + 78; ++i) {
         for(int j = 0; j < 18; ++j) {
@@ -75,6 +76,7 @@ void Map::update(uint16_t time) {
             u->update(time);
             if(!u->getAlive()) {
                 if(u == player) {
+                    u->setTime(-1);
                     return;
                 }
                 delete u;

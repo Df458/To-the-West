@@ -2,7 +2,7 @@
     <tile symbol=',' color="2" cost="1" freq="100"/>
     <tile symbol='"' color="2" cost="3" freq="15" enter="grasshopper.lua"/>
     <tile symbol='t' color="5" cost="2" freq="1"/>
-    <tile symbol="o" color="0" cost="5" freq="1" leave="trip.lua"/>
+    <tile symbol="o" color="13" cost="5" freq="1" leave="trip.lua"/>
     <creature type="wolf" freq="10"/>
     <creature type="sheep" freq="35"/>
     <creature type="ram" freq="15"/>
