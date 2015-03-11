@@ -10,6 +10,7 @@ class Unit;
 class Tile : public LuaObject {
 public:
     Tile() {}
+    Tile(const Tile& other, vec2 pos) : Tile(other) { position = pos; }
     Tile(symbol s, int cost, bool pass, std::string en = "", std::string le = "") : displayed(s), move_cost(cost), passable(pass), enter_func(en), leave_func(le) {}
     void draw(WINDOW* win, int x, int y);
     inline uint8_t getCost() { return move_cost; }
@@ -22,11 +23,14 @@ public:
     inline void setOccupant(Unit* oc) { occupant = oc; }
     inline void setPassable(bool pa) { passable = pa; }
     inline bool getPassable(void) { return passable; }
+    virtual void insert();
+    virtual void retrieve();
 
     inline std::string get_enter_func(void) { return enter_func; }
     inline std::string get_leave_func(void) { return leave_func; }
 protected:
     bool occupied = false;
+    vec2 position;
     Unit* occupant = NULL;
     symbol displayed;
     std::vector<Item*> items;

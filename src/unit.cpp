@@ -113,13 +113,26 @@ void Unit::update(uint16_t t) {
     if(statistics.xp >= statistics.max_xp)
         level_up();
 
+    if(target && target->getAlive()) {
+        lua_newtable(game_state);
+        target->insert();
+        lua_setglobal(game_state, "target");
+    }
+
     call(update_func);
+
+    if(target) {
+        lua_getglobal(game_state, "target");
+        target->retrieve();
+    }
+
     while(time > 0) {
         if(!target && hostile) {
-            if((faction == 1 || faction == 2) && abs(position.x - player->position.x) < 40)
+            if((faction == 1 || faction == 2) && abs(position.x - player->position.x) < 40) {
                 target = player;
-            else if((target = map->getTarget(position, faction))) {
-            
+                target->make_enemy(this);
+            } else if((target = map->getTarget(position, faction))) {
+                target->make_enemy(this);
             } else {
                 move(vec2(rand() % 3 - 1, rand() % 3 - 1));
             }
@@ -196,7 +209,7 @@ void Unit::retrieve(void) {
     lua_pop(game_state, 1);
     lua_getfield(game_state, -1, "time");
     time = lua_tointeger(game_state, -1);
-    lua_pop(game_state, 1);
+    lua_pop(game_state, 2);
 }
 
 bool Unit::move(vec2 delta) {
@@ -252,6 +265,8 @@ bool Unit::move(vec2 delta) {
 void Unit::die(void) {
     map->tile_at(position)->setOccupied(false);
     map->tile_at(position)->setOccupant(NULL);
+    for(auto u : enemies)
+        u->hes_dead_jim();
     alive = false;
     call(die_func);
 }
@@ -261,8 +276,10 @@ combat_result Unit::attack(Unit* other) {
     combat_result retval;
     if(!other)
         return retval;
-    if(other != player)
+    if(other != player) {
         other->target = this;
+        make_enemy(other);
+    }
     uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
     uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
     if(hit_roll < dodge_roll) {
@@ -280,8 +297,6 @@ combat_result Unit::attack(Unit* other) {
     retval.damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
     other->statistics.hp -= retval.damage;
     if(other->statistics.hp <= 0) {
-        if(target == other)
-            target = NULL;
         other->die();
         statistics.xp += other->statistics.xp_value;
         retval.flags += 0b001;
@@ -292,7 +307,7 @@ combat_result Unit::attack(Unit* other) {
 bool Unit::should_attack(Unit* other) {
     if(!other)
         return false;
-    if(other->target == this || target == other)
+    if(enemies.find(target) != enemies.end() || target == other)
         return true;
     switch(faction) {
         case 0:

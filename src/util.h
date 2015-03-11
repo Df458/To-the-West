@@ -53,14 +53,28 @@ void display_help(void);
 vec2 step(vec2 delta);
 
 const char* const help_lines[] = {
-    "Controls:",
-    "y k u",
-    " \\|/ ",
-    "h-.-l   Movement keys",
-    " /|\\",
-    "b j n",
+    "Movement Controls:",
+    "y k u 7 8 9",
+    " \\|/   \\|/",
+    "h-.-l 4-5-6  Movement keys",
+    " /|\\   /|\\",
+    "b j n 1 2 3",
     "",
-    "q: go back/exit game(ingame)",
+    "Pressing . will cause the player to wait a short while.",
+    "You may need to press it a few times to see any changes, however.",
+    "This game is not quite turn-based, but rather uses a time-based system",
+    "to determine when things act. Waiting passes the shortest time possible,",
+    "but you can also press > to wait 10x longer.",
+    "",
+    "Action Controls:",
+    "s: view stats",
+    "e: examine",
+    "",
+    "Other Controls:",
+    "",
+    "<space>/<enter>: select",
+    "?: view controls",
+    "q: back/exit",
     NULL
 };
 

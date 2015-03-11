@@ -36,13 +36,19 @@ bool start_menu() {
         char input = getch();
         switch(input) {
             case 'j':
+            case '2':
                 if(position < 9)
                     position += 2;
                 break;
             case 'k':
+            case '8':
                 if(position > 3)
                     position -= 2;
                 break;
+            case 'q':
+                del_panel(menu_panel);
+                delwin(menu_window);
+                return false;
             case ' ':
             case '\n':
                 switch(position) {
@@ -83,6 +89,7 @@ int main(int argc, char* argv[]) {
     //lua_newtable(game_state);
 
     initscr();
+    clear();
     noecho();
     cbreak();
 

@@ -4,5 +4,5 @@
     <biome type="plains" freq="6"/>
     <biome type="river" freq="2"/>
     <biome type="mountain" freq="3"/>
-    <biome type="volcano" freq="10"/>
+    <biome type="volcano" freq="2"/>
 </map>

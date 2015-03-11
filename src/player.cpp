@@ -34,36 +34,36 @@ int Player::get_input(void) {
     char input = getch();
     switch(input) {
         case 'h':
+        case '4':
             move(vec2(-1, 0));
-            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'j':
+        case '2':
             move(vec2(0, 1));
-            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'k':
+        case '8':
             move(vec2(0, -1));
-            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'l':
+        case '6':
             move(vec2(1, 0));
-            //time_passed = 2 * map->tile_at(position)->getCost();
             break;
         case 'y':
+        case '7':
             move(vec2(-1, -1));
-            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'u':
+        case '9':
             move(vec2(1, -1));
-            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'b':
+        case '1':
             move(vec2(-1, 1));
-            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 'n':
+        case '3':
             move(vec2(1, 1));
-            //time_passed = 3 * map->tile_at(position)->getCost();
             break;
         case 's':
             stats_panel = new_panel(stats_window);
@@ -73,6 +73,14 @@ int Player::get_input(void) {
             del_panel(stats_panel);
             update_panels();
             doupdate();
+            break;
+        case '5':
+        case '.':
+            return 1;
+        case '%':
+        case '>':
+            return 10;
+        case 'e':
             break;
         case 'q':
             add_message(message("Really quit? (y/n)", 4));
@@ -105,7 +113,7 @@ void Player::draw(WINDOW* window, uint16_t corner) {
         hp_color = 8;
     mvwprintw(window, 19, 1, "HP: ");
     wattron(window, COLOR_PAIR(hp_color));
-    mvwprintw(window, 19, 5, (to_string((uint16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
+    mvwprintw(window, 19, 5, (to_string((int16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
     wattroff(window, COLOR_PAIR(hp_color));
 
     wclear(stats_window);

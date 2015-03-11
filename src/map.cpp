@@ -1,5 +1,6 @@
 #include "map.h"
 #include "player.h"
+#include "effect.h"
 #include <cstring>
 #include <string>
 #include <rapidxml.hpp>
@@ -53,6 +54,14 @@ void Map::draw(void) {
         for(auto i : unit_list[j])
             i->draw(map_window, corner);
     }
+
+    update_panels();
+    doupdate();
+    for (auto i : effect_list) {
+        i->apply();
+        i->draw(map_window, corner);
+    }
+
     top_panel(map_panel);
     update_panels();
     doupdate();
@@ -76,8 +85,19 @@ void Map::update(uint16_t time) {
                 if(u)
                     delete u;
                 unit_list[j].erase(unit_list[j].begin() + i);
+                --i;
                 continue;
             }
+        }
+    }
+
+    for(uint16_t i = 0; i < effect_list.size(); ++i) {
+        Effect* e = effect_list[i];
+        e->apply();
+        if(e->canDelete()) {
+            delete e;
+            effect_list.erase(effect_list.begin() + i);
+            --i;
         }
     }
 }
@@ -126,7 +146,7 @@ void Map::generate(void) {
                 x = 0;
             for(uint16_t i = x; i < end && i < 3000; ++i) {
                 uint16_t y = j;
-                map_data[i][y] = biomes[b].get_tile();
+                map_data[i][y] = biomes[b].get_tile(vec2(i, y));
             }
         }
         pos = end;
@@ -236,12 +256,12 @@ Unit* Biome::get_unit(void) {
     return NULL;
 }
 
-Tile* Biome::get_tile(void) {
+Tile* Biome::get_tile(vec2 pos) {
     uint16_t selection = rand() % (freqs + 1);
     uint16_t mark = 0;
     for(uint16_t i = 0; i < terrains.size(); ++i) {
         if(terrain_freqs[i] + mark >= selection) {
-            return new Tile(terrains[i]);
+            return new Tile(terrains[i], pos);
         } else
             mark += terrain_freqs[i];
     }

@@ -3,6 +3,7 @@
 #include "luaobj.h"
 #include "util.h"
 #include <panel.h>
+#include <set>
 
 // Factions:
 // 0: Good guys - aggro on 1, 2
@@ -49,9 +50,13 @@ public:
     inline void setTime(int16_t t) { time = t; }
     virtual bool should_attack(Unit* other);
     void level_up(void);
+    void make_enemy(Unit* u) { if(enemies.find(u) == enemies.end()) enemies.insert(u); }
+    void lose_enemy(Unit* u) { if(enemies.find(u) != enemies.end()) enemies.erase(u); }
+    void hes_dead_jim() { lose_enemy(target); target = NULL; }
 
 protected:
     Unit* target = NULL;
+    std::set<Unit*> enemies;
     std::string name;
     vec2 position;
     stats statistics;

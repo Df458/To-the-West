@@ -5,11 +5,12 @@
 #include <vector>
 
 class Unit;
+class Effect;
 
 class Biome {
 public:
     Biome(std::string file);
-    Tile* get_tile(void);
+    Tile* get_tile(vec2 pos);
     Unit* get_unit(void);
     void set_index(uint16_t index);
     inline const uint16_t& get_size(void) const { return size; }
@@ -40,11 +41,13 @@ public:
     void spawn(void);
     inline Tile* tile_at(vec2 position) { return map_data[position.x][position.y]; }
     Unit* getTarget(vec2 position, uint8_t faction);
+    void addEffect(Effect* e) { effect_list.push_back(e); }
 
 protected:
     Unit* active_unit;
     Tile* map_data[3000][18];
     std::vector<Unit*> unit_list[4];
+    std::vector<Effect*> effect_list;
     WINDOW* map_window;
     PANEL* map_panel;
     std::vector<Biome> biomes;

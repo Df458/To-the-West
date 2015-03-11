@@ -2,4 +2,5 @@
     <symbol char="D" color="14"/>
     <stats hp="245" str="50" spd="26" acc="23" def="57" dog="18" value="100"/>
     <ai faction="2" aggressive="true"/>
+    <script type="update" id="dragon.update.lua"/>
 </creature>

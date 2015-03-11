@@ -39,21 +39,26 @@ void display_help(void) {
     WINDOW* help_win = newwin(20, 80, 0, 0);
     PANEL*  help_panel = new_panel(help_win);
     top_panel(help_panel);
-    box(help_win, 0, 0);
+    uint16_t scroll = 0;
     while(true) {
-        uint16_t scroll = 0;
-        for(uint16_t i = scroll; i < scroll + 20 && help_lines[i] != NULL; ++i) {
+        wclear(help_win);
+        box(help_win, 0, 0);
+        for(uint16_t i = scroll; i < scroll + 18 && help_lines[i] != NULL; ++i) {
             mvwprintw(help_win, i - scroll + 1, 1, help_lines[i]);
         }
         update_panels();
         doupdate();
-        char input = getch();
+        int input = wgetch(help_win);
         switch(input) {
             case 'j':
-                if(help_lines[scroll] != NULL)
+            case '2':
+            case KEY_DOWN:
+                if(help_lines[scroll + 18] != NULL)
                     ++scroll;
                 break;
             case 'k':
+            case '8':
+            case KEY_UP:
                 if(scroll > 0)
                     --scroll;
                 break;
