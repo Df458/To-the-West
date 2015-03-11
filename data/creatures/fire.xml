@@ -1,0 +1,6 @@
+<creature name="fire elemental">
+    <symbol char="%" color="14"/>
+    <stats hp="46" str="35" spd="40" acc="20" def="19" dog="25" value="40"/>
+    <ai faction="2" aggressive="true"/>
+</creature>
+

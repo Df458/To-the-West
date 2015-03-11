@@ -214,11 +214,30 @@ bool Unit::move(vec2 delta) {
         return false;
     }
 
-    /*prev->*/call(prev->get_leave_func());
+
+    lua_pushboolean(game_state, true);
+    lua_setglobal(game_state, "keep_moving");
+    call(prev->get_leave_func());
+    lua_getglobal(game_state, "keep_moving");
+    if(!lua_toboolean(game_state, -1)) {
+        lua_pop(game_state, 1);
+        return false;
+    }
+    lua_pop(game_state, 1);
     prev->setOccupied(false);
     prev->setOccupant(NULL);
     position += delta;
-    /*next->*/call(next->get_enter_func());
+    lua_pushboolean(game_state, true);
+    lua_setglobal(game_state, "keep_moving");
+    call(next->get_enter_func());
+    lua_getglobal(game_state, "keep_moving");
+    if(!lua_toboolean(game_state, -1)) {
+        prev->setOccupied(true);
+        prev->setOccupant(this);
+        position -= delta;
+        lua_pop(game_state, 1);
+        return false;
+    }
     next->setOccupied(true);
     next->setOccupant(this);
 

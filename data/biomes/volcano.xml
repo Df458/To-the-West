@@ -6,4 +6,7 @@
     <tile symbol='.' color="0" cost="1" freq="50"/>
     <tile symbol='~' color="8" cost="1" freq="15" enter="lava.lua"/>
     <tile symbol='=' color="8" cost="1" freq="15" enter="lava.lua"/>
+    <creature type="golem" freq="20"/>
+    <creature type="dragon" freq="1"/>
+    <creature type="fire" freq="20"/>
 </biome>

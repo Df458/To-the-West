@@ -8,4 +8,6 @@ if continue then
     if this.controlled == true then
         game.message("The searing heat burns you alive for 50 damage!", 8)
     end
+else
+    keep_moving = false;
 end
