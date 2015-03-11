@@ -6,7 +6,6 @@
 #include <string>
 
 Effect::Effect(vec2 tile, float radius, bool v, symbol c, std::string ont, std::string onu) : Effect(v, c, ont, onu) {
-    affected_list.push_back(tile);
     float r = pow(radius, 2);
     for(int i = tile.x - radius; i <= tile.x + radius; ++i) {
         for(int j = tile.y - radius; j <= tile.y + radius; ++j) {

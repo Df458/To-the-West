@@ -1,0 +1,12 @@
+<biome size="150" variance="80" spread="8">
+    <tile symbol='~' color="4" cost="1" freq="90" enter="drysand.lua"/>
+    <tile symbol='-' color="4" cost="1" freq="75" enter="drysand.lua"/>
+    <tile symbol='.' color="4" cost="1" freq="30" enter="drysand.lua"/>
+    <tile symbol='~' color="0" cost="1" freq="250" enter="drysand.lua"/>
+    <tile symbol='-' color="0" cost="1" freq="200" enter="drysand.lua"/>
+    <tile symbol='.' color="0" cost="1" freq="150" enter="drysand.lua"/>
+    <tile symbol='w' color="0" cost="1" freq="25" enter="drysand.lua" leave="bones.lua"/>
+    <tile symbol="o" color="4" cost="5" freq="1" leave="trip.lua"/>
+    <creature type="serpent" freq="1"/>
+    <creature type="giantserpent" freq="1"/>
+</biome>
