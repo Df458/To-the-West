@@ -36,17 +36,5 @@ void Tile::retrieve() {
 }
 
 void Tile::addItem(Item* it) {
-    for(auto i : items) {
-        if(i->getName() == it->getName()) {
-            if(i->getStack() + it->getStack() < 100) {
-                i->setStack(i->getStack() + it->getStack());
-                return;
-            } else if(i->getStack() < 100) {
-                uint16_t n = 99 - i->getStack();
-                i->setStack(99);
-                it->setStack(it->getStack() - n);
-            }
-        }
-    }
     items.push_back(it);
 }
