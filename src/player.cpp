@@ -4,12 +4,18 @@
 #include "util.h"
 #include <curses.h>
 #include <string>
+#include <cstring>
 
 using namespace std;
 
 Player::Player(void) : Unit() {
     displayed.disp = '@';
     move_func = "test.lua";
+    add_item(new Item("healpotion"));
+    add_item(new Item("healpotion", 99));
+    add_item(new Item("healpotion", 20));
+    add_item(new Item("healpotion", 49));
+    add_item(new Item("healpotion", 8));
     position.x = 2979;
     position.y = 9;
     faction = 0;
@@ -74,6 +80,18 @@ int Player::get_input(void) {
             update_panels();
             //doupdate();
             break;
+        case 'i':
+            showInventory();
+            break;
+        case 'a':
+            useItem(selectItem());
+            break;
+        case 't':
+            throwItem(selectItem());
+            break;
+        case 'd':
+            dropItem(selectItem());
+            break;
         case '5':
         case '.':
             return 1;
@@ -137,6 +155,9 @@ void Player::draw(WINDOW* window, uint16_t corner) {
 }
 
 void Player::draw_messages() {
+    if(!dirty)
+        return;
+    dirty = false;
     wclear(ui_window);
     box(ui_window, 0, 0);
 
@@ -150,6 +171,7 @@ void Player::draw_messages() {
 }
 
 void Player::add_message(message mess) {
+    dirty = true;
     while(mess.text.size() > 78) {
         uint16_t i = 78;
         uint offset = 0;
@@ -294,6 +316,7 @@ void Player::examine(vec2 position) {
         wrefresh(examine_window);
         getch();
         del_panel(examine_panel);
+        delwin(examine_window);
         update_panels();
     }
 }
@@ -302,4 +325,87 @@ void Player::takeItems() {
     std::vector<Item*> it = map->tile_at(position)->takeItems();
     for(auto i : it)
         inventory.push_back(i);
+}
+
+void Player::showInventory() {
+    WINDOW* inv_window = newwin(31, 40, 0, 40);
+    PANEL*  inv_panel = new_panel(inv_window);
+    box(inv_window, 0, 0);
+
+    uint8_t j = 1;
+    mvwprintw(inv_window, 1, 15, "Inventory");
+    for(auto i : inventory) {
+        mvwprintw(inv_window, 2 + j, 1, (to_string(j) + " " + i->getName() + " - " + to_string(i->getStack())).c_str());
+        ++j;
+    }
+
+    update_panels();
+    wrefresh(inv_window);
+    getch();
+    del_panel(inv_panel);
+    delwin(inv_window);
+    update_panels();
+}
+
+Item* Player::selectItem() {
+    WINDOW* inv_window = newwin(31, 40, 0, 40);
+    PANEL*  inv_panel = new_panel(inv_window);
+    box(inv_window, 0, 0);
+
+    uint8_t j = 1;
+    mvwprintw(inv_window, 1, 15, "Select Item Number");
+    for(auto i : inventory) {
+        mvwprintw(inv_window, 2 + j, 1, (to_string(j) + " " + i->getName() + " - " + to_string(i->getStack())).c_str());
+        ++j;
+    }
+
+    update_panels();
+    wrefresh(inv_window);
+    echo();
+    char input[2];
+    mvwgetnstr(inv_window, 29, 1, input, 2);
+    del_panel(inv_panel);
+    delwin(inv_window);
+    update_panels();
+    noecho();
+    if(!strcmp(input, "q") || strlen(input) == 0)
+        return NULL;
+    else {
+        if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size())
+            return inventory[atoi(input) - 1];
+        else
+            add_message(message("No item in slot '" + string(input) + "'.", 8));
+    }
+    return NULL;
+}
+
+void Player::throwItem(Item* i) {
+    if(!i)
+        return;
+}
+
+void Player::dropItem(Item* i) {
+    if(!i)
+        return;
+}
+
+void Player::useItem(Item* i) {
+    if(!i)
+        return;
+}
+
+void Player::add_item(Item* it) {
+    for(auto i : inventory) {
+        if(i->getName() == it->getName()) {
+            if(i->getStack() + it->getStack() < 100) {
+                i->setStack(i->getStack() + it->getStack());
+                return;
+            } else if(i->getStack() < 100) {
+                uint16_t n = 99 - i->getStack();
+                i->setStack(99);
+                it->setStack(it->getStack() - n);
+            }
+        }
+    }
+    inventory.push_back(it);
 }

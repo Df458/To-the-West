@@ -37,6 +37,12 @@ public:
     void attacked(combat_result res, Unit* other);
     virtual void level_up(void);
     void examine(vec2 position);
+    void showInventory();
+    Item* selectItem();
+    void throwItem(Item* i);
+    void dropItem(Item* i);
+    void useItem(Item* i);
+    void add_item(Item* i);
 
     virtual combat_result attack(Unit* other);
     virtual bool should_attack(Unit* other);
@@ -47,4 +53,5 @@ protected:
     PANEL*  stats_panel;
     std::vector<message> messages;
     std::vector<Item*> inventory;
+    bool dirty = true;
 };
