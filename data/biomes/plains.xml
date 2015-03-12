@@ -4,8 +4,9 @@
     <tile symbol='t' color="5" cost="2" freq="1"/>
     <tile symbol="o" color="0" cost="5" freq="1" leave="trip.lua"/>
     <tile symbol='.' color="3" cost="1" freq="50"/>
-    <creature type="wolf" freq="10"/>
-    <creature type="sheep" freq="35"/>
-    <creature type="ram" freq="15"/>
-    <creature type="serpent" freq="1"/>
+    <creature type="wolf" freq="60"/>
+    <creature type="sheep" freq="200"/>
+    <creature type="ram" freq="90"/>
+    <creature type="serpent" freq="6"/>
+    <creature type="necromancer" freq="1"/>
 </biome>

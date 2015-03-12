@@ -51,6 +51,7 @@ void _error(const char* file, unsigned line, std::string message);
 void display_help(void);
 
 vec2 step(vec2 delta);
+vec2 select_target();
 
 const char* const help_lines[] = {
     "Movement Controls:",
@@ -69,6 +70,8 @@ const char* const help_lines[] = {
     "Action Controls:",
     "s: view stats",
     "e: examine",
+    ",: take items",
+    "i: view inventory",
     "",
     "Other Controls:",
     "",

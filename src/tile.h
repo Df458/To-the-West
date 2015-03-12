@@ -23,6 +23,7 @@ public:
     inline void setOccupant(Unit* oc) { occupant = oc; }
     inline void setPassable(bool pa) { passable = pa; }
     inline bool getPassable(void) { return passable; }
+    std::vector<Item*> takeItems(void) { std::vector<Item*> vec = items; items.clear(); return vec; }
     virtual void insert();
     virtual void retrieve();
 

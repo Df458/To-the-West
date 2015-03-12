@@ -1,2 +1,4 @@
-<item name="Potion of Healing">
+<item name="Potion of Healing" equippable="true">
+    <script type="use" id="healpot.lua"/>
+    <script type="throw" unit="healpot.lua"/>
 </item>

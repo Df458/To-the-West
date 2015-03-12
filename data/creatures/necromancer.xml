@@ -1,0 +1,6 @@
+<creature name="necromancer">
+    <symbol char="@" color="15"/>
+    <stats hp="20" str="10" spd="6" acc="10" def="8" dog="17" value="28"/>
+    <ai faction="1" aggressive="false"/>
+    <script type="update" id="necro.lua"/>
+</creature>

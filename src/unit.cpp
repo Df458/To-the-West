@@ -87,6 +87,65 @@ Unit::Unit(std::string file) {
     delete[] data;
 }
 
+Unit::Unit(std::string file, vec2 pos) {
+    regen_timer = 20;
+    char* data = load_file(("/data/creatures/" + file + ".xml").c_str());
+    xml_document<> doc;
+    doc.parse<0>(data);
+    auto node = doc.first_node("creature");
+    if(auto a = node->first_attribute("name"))
+        name = a->value();
+
+    if(auto n = node->first_node("symbol")) {
+        char disp = '@';
+        uint16_t color = 0;
+        if(auto a = n->first_attribute("char"))
+            disp = a->value()[0];
+        if(auto a = n->first_attribute("color"))
+            color = atoi(a->value());
+        displayed = symbol(disp, color);
+    }
+
+    if(auto n = node->first_node("stats")) {
+        if(auto a = n->first_attribute("hp"))
+            statistics.max_hp = atof(a->value());
+        if(auto a = n->first_attribute("str"))
+            statistics.strength = atoi(a->value());
+        if(auto a = n->first_attribute("def"))
+            statistics.defense = atoi(a->value());
+        if(auto a = n->first_attribute("spd"))
+            statistics.speed = atoi(a->value());
+        if(auto a = n->first_attribute("dog"))
+            statistics.dodge = atoi(a->value());
+        if(auto a = n->first_attribute("acc"))
+            statistics.accuracy = atoi(a->value());
+        if(auto a = n->first_attribute("value"))
+            statistics.xp_value = atoi(a->value());
+        statistics.hp = statistics.max_hp;
+    }
+    
+    if(auto n = node->first_node("ai")) {
+        if(auto a = n->first_attribute("faction"))
+            faction = atoi(a->value());
+        if(auto a = n->first_attribute("hostile"))
+            hostile = strcmp(a->value(), "false");
+    }
+
+    for(auto n = node->first_node("script"); n; n = n->next_sibling("script")) {
+        if(auto at = n->first_attribute("type")) {
+            if(!strcmp(at->value(), "update"))
+                update_func = n->first_attribute("id")->value();
+        }
+    }
+
+    delete[] data;
+    position = pos;
+    map->tile_at(position)->setOccupied(true);
+    map->tile_at(position)->setOccupant(this);
+    map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
+    call(create_func);
+}
+
 void Unit::draw(WINDOW* window, uint16_t corner) {
     if(position.x < corner || position.x > corner + 77)
         return;
@@ -251,6 +310,7 @@ bool Unit::move(vec2 delta) {
         lua_pop(game_state, 1);
         return false;
     }
+    lua_pop(game_state, 1);
     next->setOccupied(true);
     next->setOccupant(this);
 

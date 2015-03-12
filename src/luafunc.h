@@ -12,6 +12,7 @@ int lua_setTile(lua_State* ls);
 int lua_message(lua_State* ls);
 int lua_ask(lua_State* ls);
 int lua_effectAt(lua_State* ls);
+int lua_spawn(lua_State* ls);
 
 const luaL_reg lua_global_functions[] = {
     {"disperror", lua_dispError},
@@ -20,6 +21,7 @@ const luaL_reg lua_global_functions[] = {
     {"message", lua_message},
     {"ask", lua_ask},
     {"effect", lua_effectAt},
+    {"spawn", lua_spawn},
     {0, 0}
 };
 #endif

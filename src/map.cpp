@@ -63,7 +63,7 @@ void Map::draw(void) {
     }
 
     top_panel(map_panel);
-    update_panels();
+    //update_panels();
     doupdate();
     wmove(map_window, active_unit->getPosition().y + 1, active_unit->getPosition().x - corner + 1);
 }
@@ -115,6 +115,14 @@ void Map::spawn(void) {
     if(!map_data[x][y]->getPassable() || map_data[x][y]->getOccupied() || !biomes[map_data[x][y]->getBiome()].get_unit())
         return;
     addUnit(new Unit(biomes[map_data[x][y]->getBiome()].get_unit(), vec2(x, y)));
+}
+
+void Map::spawnAt(vec2 position, std::string name) {
+    position.x = clamp((int32_t)position.x, 0, 3000);
+    position.y = clamp((int32_t)position.y, 0, 17);
+    if(!map_data[position.x][position.y]->getPassable() || map_data[position.x][position.y]->getOccupied())
+        return;
+    addUnit(new Unit(name, position));
 }
 
 void Map::generate(void) {

@@ -1,0 +1,5 @@
+<creature name="skeleton">
+    <symbol char="@" color="13"/>
+    <stats hp="5" str="16" spd="17" acc="14" def="8" dog="20" value="4"/>
+    <ai faction="1" aggressive="true"/>
+</creature>

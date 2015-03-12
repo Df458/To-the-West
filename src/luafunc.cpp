@@ -47,3 +47,8 @@ int lua_effectAt(lua_State* ls) {
     }
     return 0;
 }
+
+int lua_spawn(lua_State* ls) {
+    map->spawnAt(vec2(lua_tointeger(ls, 1), lua_tointeger(ls, 2)), lua_tostring(ls, 3));
+    return 0;
+}

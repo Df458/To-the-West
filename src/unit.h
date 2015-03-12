@@ -31,6 +31,7 @@ class Unit : public LuaObject {
 public:
     Unit(void);
     Unit(std::string file);
+    Unit(std::string file, vec2 pos);
     Unit(Unit* copy, vec2 pos);
     virtual ~Unit() {}
 
@@ -53,6 +54,7 @@ public:
     void make_enemy(Unit* u) { if(enemies.find(u) == enemies.end()) enemies.insert(u); }
     void lose_enemy(Unit* u) { if(enemies.find(u) != enemies.end()) enemies.erase(u); }
     void hes_dead_jim() { lose_enemy(target); target = NULL; }
+    inline stats get_stats() { return statistics; }
 
 protected:
     Unit* target = NULL;

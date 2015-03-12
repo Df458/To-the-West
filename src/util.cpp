@@ -4,6 +4,7 @@
 #include <unistd.h>
 #endif
 #include <panel.h>
+#include "map.h"
 #include "util.h"
 #include "player.h"
 
@@ -101,4 +102,74 @@ vec2 step(vec2 delta) {
     if((float)delta.x / (float)delta.y < 0.6)
         return vec2(0, -delta.y / abs(delta.y));
     return vec2(-delta.x / abs(delta.x), -delta.y / abs(delta.y));
+}
+
+vec2 select_target() {
+    vec2 target = player->getPosition();
+    uint16_t corner = clamp((int)player->getPosition().x - 35, 0, 2922);
+    wmove(map->getWindow(), target.y + 1, target.x - corner + 1);
+    wrefresh(map->getWindow());
+    while(char input = getch()) {
+    switch(input) {
+        case 'h':
+        case '4':
+            if(target.x - corner > 0)
+                target.x--;
+            break;
+        case 'j':
+        case '2':
+            if(target.y < 17)
+                target.y++;
+            break;
+        case 'k':
+        case '8':
+            if(target.y > 0)
+                target.y--;
+            break;
+        case 'l':
+        case '6':
+            if(target.x - corner < 77)
+                target.x++;
+            break;
+        case 'y':
+        case '7':
+            if(target.x - corner > 0 && target.y > 0) {
+                target.x--;
+                target.y--;
+            }
+            break;
+        case 'u':
+        case '9':
+            if(target.x - corner < 77 && target.y > 0) {
+                target.x++;
+                target.y--;
+            }
+            break;
+        case 'b':
+        case '1':
+            if(target.x - corner > 0 && target.y < 17) {
+                target.x--;
+                target.y++;
+            }
+            break;
+        case 'n':
+        case '3':
+            if(target.x - corner < 77 && target.y < 17) {
+                target.x++;
+                target.y++;
+            }
+            break;
+        case ' ':
+        case '\n':
+        case '5':
+            return target;
+            break;
+        case 'q':
+            return vec2(-1, -1);
+            break;
+        }
+        wmove(map->getWindow(), target.y + 1, target.x - corner + 1);
+        wrefresh(map->getWindow());
+    }
+    return target;
 }

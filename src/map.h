@@ -39,9 +39,11 @@ public:
     void update(uint16_t time);
     void generate(void);
     void spawn(void);
+    void spawnAt(vec2 position, std::string name);
     inline Tile* tile_at(vec2 position) { return map_data[position.x][position.y]; }
     Unit* getTarget(vec2 position, uint8_t faction);
     void addEffect(Effect* e) { effect_list.push_back(e); }
+    WINDOW* getWindow() { return map_window; }
 
 protected:
     Unit* active_unit;

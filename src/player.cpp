@@ -72,7 +72,7 @@ int Player::get_input(void) {
             getch();
             del_panel(stats_panel);
             update_panels();
-            doupdate();
+            //doupdate();
             break;
         case '5':
         case '.':
@@ -80,8 +80,15 @@ int Player::get_input(void) {
         case '%':
         case '>':
             return 10;
-        case 'e':
-            break;
+        case 'e': {
+            add_message(message("Select something"));
+            draw_messages();
+            wrefresh(ui_window);
+            vec2 target_position = select_target();
+            if(target_position.x != -1) {
+                examine(target_position);
+            }
+        } break;
         case 'q':
             add_message(message("Really quit? (y/n)", 4));
             draw_messages();
@@ -158,9 +165,10 @@ void Player::add_message(message mess) {
     }
 
     messages.push_back(mess);
-    //draw_messages();
+    draw_messages();
     //update_panels();
     //doupdate();
+    //wrefresh(ui_window);
 }
 
 bool Player::ask_question(message mess) {
@@ -214,7 +222,7 @@ bool Player::should_attack(Unit* other) {
     if(!Unit::should_attack(other)) {
         add_message(message("Really attack the " + other->getName() + "? (y/n)", 4));
         draw_messages();
-        update_panels();
+        //update_panels();
         doupdate();
         while(char c = getch()) {
             if(c == 'y')
@@ -266,5 +274,32 @@ void Player::level_up(void) {
     getch();
     del_panel(stats_panel);
     update_panels();
-    doupdate();
+}
+
+void Player::examine(vec2 position) {
+    Tile* t = map->tile_at(position);
+    if(t->getOccupied()) {
+        WINDOW* examine_window = newwin(20, 40, 0, 40);
+        PANEL*  examine_panel = new_panel(examine_window);
+        box(examine_window, 0, 0);
+        Unit* c = t->getOccupant();
+        stats s = c->get_stats();
+        mvwprintw(examine_window, 1, 14, "Information");
+        mvwprintw(examine_window, 3, 1, ("Name:     " + c->getName()).c_str());
+        mvwprintw(examine_window, 5, 1, ("Strength: " + to_string(s.strength)).c_str());
+        mvwprintw(examine_window, 7, 1, ("Defense:  " + to_string(s.defense)).c_str());
+        mvwprintw(examine_window, 9, 1, ("Dodge:    " + to_string(s.dodge)).c_str());
+        mvwprintw(examine_window, 11, 1, ("Speed:    " + to_string(s.speed)).c_str());
+        update_panels();
+        wrefresh(examine_window);
+        getch();
+        del_panel(examine_panel);
+        update_panels();
+    }
+}
+
+void Player::takeItems() {
+    std::vector<Item*> it = map->tile_at(position)->takeItems();
+    for(auto i : it)
+        inventory.push_back(i);
 }

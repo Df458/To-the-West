@@ -1,5 +1,7 @@
 #include "unit.h"
 
+class Item;
+
 class Player : public Unit {
 public:
     Player(void);
@@ -31,8 +33,10 @@ public:
     void draw_messages(void);
     void add_message(message mess);
     bool ask_question(message mess);
+    void takeItems();
     void attacked(combat_result res, Unit* other);
     virtual void level_up(void);
+    void examine(vec2 position);
 
     virtual combat_result attack(Unit* other);
     virtual bool should_attack(Unit* other);
@@ -42,4 +46,5 @@ protected:
     WINDOW* stats_window;
     PANEL*  stats_panel;
     std::vector<message> messages;
+    std::vector<Item*> inventory;
 };
