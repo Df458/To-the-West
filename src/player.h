@@ -38,7 +38,7 @@ public:
     virtual void level_up(void);
     void examine(vec2 position);
     void showInventory();
-    Item* selectItem();
+    Item* selectItem(bool all = false);
     void throwItem(Item* i);
     void dropItem(Item* i);
     void useItem(Item* i);

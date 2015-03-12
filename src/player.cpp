@@ -90,7 +90,7 @@ int Player::get_input(void) {
             throwItem(selectItem());
             break;
         case 'd':
-            dropItem(selectItem());
+            dropItem(selectItem(true));
             break;
         case '5':
         case '.':
@@ -324,7 +324,7 @@ void Player::examine(vec2 position) {
 void Player::takeItems() {
     std::vector<Item*> it = map->tile_at(position)->takeItems();
     for(auto i : it)
-        inventory.push_back(i);
+        add_item(i);
 }
 
 void Player::showInventory() {
@@ -347,7 +347,7 @@ void Player::showInventory() {
     update_panels();
 }
 
-Item* Player::selectItem() {
+Item* Player::selectItem(bool all) {
     WINDOW* inv_window = newwin(31, 40, 0, 40);
     PANEL*  inv_panel = new_panel(inv_window);
     box(inv_window, 0, 0);
@@ -371,9 +371,12 @@ Item* Player::selectItem() {
     if(!strcmp(input, "q") || strlen(input) == 0)
         return NULL;
     else {
-        if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size())
-            return inventory[atoi(input) - 1];
-        else
+        if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size()) {
+            Item* item = inventory[atoi(input) - 1];
+            if(item->getStack() == 1 || all)
+                inventory.erase(inventory.begin() + atoi(input) - 1);
+            return item;
+        } else
             add_message(message("No item in slot '" + string(input) + "'.", 8));
     }
     return NULL;
@@ -382,16 +385,23 @@ Item* Player::selectItem() {
 void Player::throwItem(Item* i) {
     if(!i)
         return;
+    // delete if gone
 }
 
 void Player::dropItem(Item* i) {
     if(!i)
         return;
+    map->tile_at(position)->addItem(i);
 }
 
 void Player::useItem(Item* i) {
     if(!i)
         return;
+    call(i->getUseCallback());
+    if(i->getStack() == 1)
+        delete i;
+    else
+        i->setStack(i->getStack() - 1);
 }
 
 void Player::add_item(Item* it) {
