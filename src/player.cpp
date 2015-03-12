@@ -1,3 +1,4 @@
+#include "effect.h"
 #include "player.h"
 #include "map.h"
 #include <cmath>
@@ -375,7 +376,10 @@ Item* Player::selectItem(bool all) {
             Item* item = inventory[atoi(input) - 1];
             if(item->getStack() == 1 || all)
                 inventory.erase(inventory.begin() + atoi(input) - 1);
-            return item;
+            else {
+                item->setStack(item->getStack() - 1);
+                return new Item(item, 1);
+            }
         } else
             add_message(message("No item in slot '" + string(input) + "'.", 8));
     }
@@ -385,7 +389,23 @@ Item* Player::selectItem(bool all) {
 void Player::throwItem(Item* i) {
     if(!i)
         return;
-    // delete if gone
+    if(i->getThrowTileCallback().empty() && i->getThrowUnitCallback().empty()) {
+        add_item(i);
+        add_message(message("You don't think throwing a " + i->getName() + " would be a good idea"));
+        return;
+    }
+    add_message(message("Select a target to throw at"));
+    draw_messages();
+    wrefresh(ui_window);
+    vec2 t = select_target();
+    if(position.x == t.x && position.y == t.y) {
+        add_item(i);
+        message(message("You toss the " + i->getName() + " into the air, and then catch it. "));
+        return;
+    }
+    add_message(message("You hurl the " + i->getName() + "!"));
+    map->addEffect(new Effect(position, t, false, true, symbol('O', 8), i->getThrowTileCallback(), i->getThrowUnitCallback()));
+    time -= 5;
 }
 
 void Player::dropItem(Item* i) {
@@ -409,6 +429,7 @@ void Player::add_item(Item* it) {
         if(i->getName() == it->getName()) {
             if(i->getStack() + it->getStack() < 100) {
                 i->setStack(i->getStack() + it->getStack());
+                delete it;
                 return;
             } else if(i->getStack() < 100) {
                 uint16_t n = 99 - i->getStack();

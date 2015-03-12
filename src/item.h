@@ -9,6 +9,8 @@ class Item : public LuaObject {
 public:
     Item(std::string file);
     Item(std::string file, uint16_t s) : Item(file) { stack = s; }
+    Item(Item* i);
+    Item(Item* it, uint16_t s) : Item(it) { stack = s; }
     virtual ~Item() {}
 
     std::string getName() { return name; }
@@ -17,6 +19,8 @@ public:
 
     inline std::string getUseCallback() { return use_func; }
     inline std::string getDropCallback() { return drop_func; }
+    inline std::string getThrowTileCallback() { return throw_tile_func; }
+    inline std::string getThrowUnitCallback() { return throw_unit_func; }
 protected:
     symbol displayed;
 

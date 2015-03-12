@@ -48,3 +48,14 @@ Item::Item(std::string file) {
 
     delete[] data;
 }
+
+Item::Item(Item* i) {
+    name = i->name;
+    take_func = i->take_func;
+    use_func = i->use_func;
+    equip_func = i->equip_func;
+    unequip_func = i->unequip_func;
+    step_func = i->step_func;
+    throw_tile_func = i->throw_tile_func;
+    throw_unit_func = i->throw_unit_func;
+}
