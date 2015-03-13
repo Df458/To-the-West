@@ -12,11 +12,8 @@ using namespace std;
 Player::Player(void) : Unit() {
     displayed.disp = '@';
     move_func = "test.lua";
-    add_item(new Item("healpotion"));
-    add_item(new Item("healpotion", 99));
-    add_item(new Item("healpotion", 20));
-    add_item(new Item("healpotion", 49));
-    add_item(new Item("healpotion", 8));
+    for(int i = 0; i < 100; ++i)
+        add_item(new Item("healpotion", 99));
     position.x = 2979;
     position.y = 9;
     faction = 0;
@@ -334,58 +331,95 @@ void Player::takeItems() {
 void Player::showInventory() {
     WINDOW* inv_window = newwin(31, 40, 0, 40);
     PANEL*  inv_panel = new_panel(inv_window);
-    box(inv_window, 0, 0);
 
-    uint8_t j = 1;
-    mvwprintw(inv_window, 1, 15, "Inventory");
-    for(auto i : inventory) {
-        mvwprintw(inv_window, 2 + j, 1, (to_string(j) + " " + i->getName() + " - " + to_string(i->getStack())).c_str());
-        ++j;
+    uint16_t pos = 0;
+    while(true) {
+        wclear(inv_window);
+        box(inv_window, 0, 0);
+        uint8_t j = 1;
+        mvwprintw(inv_window, 1, 15, "Inventory");
+        for(uint16_t i = pos; i < inventory.size(); ++i) {
+            if(j >= 27)
+                break;
+            mvwprintw(inv_window, 2 + j, 1, (to_string(pos + j) + ": " + inventory[i]->getName() + " (" + to_string(inventory[i]->getStack()) + ")").c_str());
+            ++j;
+        }
+
+        update_panels();
+        wrefresh(inv_window);
+        mvwprintw(inv_window, 29, 1, "(n/p/q) >");
+        int input = mvwgetch(inv_window, 29, 11);
+        if(input == 'q') {
+            del_panel(inv_panel);
+            delwin(inv_window);
+            update_panels();
+            noecho();
+            return;
+        } else if(input == 'n') {
+            if(pos + 26 < inventory.size())
+                pos += 26;
+        } else if(input == 'p') {
+            if(pos >= 26)
+                pos -= 26;
+        }
     }
-
-    update_panels();
-    wrefresh(inv_window);
-    getch();
-    del_panel(inv_panel);
-    delwin(inv_window);
-    update_panels();
 }
 
 Item* Player::selectItem(bool all) {
     WINDOW* inv_window = newwin(31, 40, 0, 40);
     PANEL*  inv_panel = new_panel(inv_window);
-    box(inv_window, 0, 0);
 
-    uint8_t j = 1;
-    mvwprintw(inv_window, 1, 15, "Select Item Number");
-    for(auto i : inventory) {
-        mvwprintw(inv_window, 2 + j, 1, (to_string(j) + " " + i->getName() + " - " + to_string(i->getStack())).c_str());
-        ++j;
-    }
+    uint16_t pos = 0;
+    while(true) {
+        wclear(inv_window);
+        box(inv_window, 0, 0);
+        uint8_t j = 1;
+        mvwprintw(inv_window, 1, 10, "Select Item Number");
+        for(uint16_t i = pos; i < inventory.size(); ++i) {
+            if(j >= 27)
+                break;
+            mvwprintw(inv_window, 2 + j, 1, (to_string(pos + j) + ": " + inventory[i]->getName() + " (" + to_string(inventory[i]->getStack()) + ")").c_str());
+            ++j;
+        }
 
-    update_panels();
-    wrefresh(inv_window);
-    echo();
-    char input[2];
-    mvwgetnstr(inv_window, 29, 1, input, 2);
-    del_panel(inv_panel);
-    delwin(inv_window);
-    update_panels();
-    noecho();
-    if(!strcmp(input, "q") || strlen(input) == 0)
-        return NULL;
-    else {
-        if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size()) {
-            Item* item = inventory[atoi(input) - 1];
-            if(item->getStack() == 1 || all) {
-                inventory.erase(inventory.begin() + atoi(input) - 1);
-                return item;
-            } else {
-                item->setStack(item->getStack() - 1);
-                return new Item(item, 1);
-            }
-        } else
-            add_message(message("No item in slot '" + string(input) + "'.", 8));
+        update_panels();
+        wrefresh(inv_window);
+        echo();
+        char input[3];
+        mvwprintw(inv_window, 29, 1, "(n/p/q) >");
+        mvwgetnstr(inv_window, 29, 11, input, 2);
+        noecho();
+        if(!strcmp(input, "q") || strlen(input) == 0) {
+            del_panel(inv_panel);
+            delwin(inv_window);
+            update_panels();
+            noecho();
+            return NULL;
+        } else if(!strcmp(input, "n")) {
+            if(pos + 26 < inventory.size())
+                pos += 26;
+            continue;
+        } else if(!strcmp(input, "p")) {
+            if(pos >= 26)
+                pos -= 26;
+            continue;
+        } else {
+            del_panel(inv_panel);
+            delwin(inv_window);
+            update_panels();
+            noecho();
+            if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size()) {
+                Item* item = inventory[atoi(input) - 1];
+                if(item->getStack() == 1 || all) {
+                    inventory.erase(inventory.begin() + atoi(input) - 1);
+                    return item;
+                } else {
+                    item->setStack(item->getStack() - 1);
+                    return new Item(item, 1);
+                }
+            } else
+                add_message(message("No item in slot '" + string(input) + "'.", 8));
+        }
     }
     return NULL;
 }
