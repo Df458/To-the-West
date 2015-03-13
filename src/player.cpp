@@ -12,9 +12,10 @@ using namespace std;
 Player::Player(void) : Unit() {
     displayed.disp = '@';
     move_func = "test.lua";
-    for(int i = 0; i < 100; ++i)
-        add_item(new Item("healpotion", 99));
-    position.x = 2979;
+    //add_item(new Item("healpotion", 2));
+    //for(int i = 0; i < 100; ++i)
+        //add_item(new Item("healpotion", 99));
+    position.x = 979;
     position.y = 9;
     faction = 0;
     controlled = true;
@@ -126,7 +127,10 @@ int Player::get_input(void) {
             break;
     }
 
-    return -time;
+    int t = -time + (statistics.speed/4);
+    if(t <= 0 && -time < 0)
+        t = -1;
+    return t;
 }
 
 void Player::draw(WINDOW* window, uint16_t corner) {
@@ -141,6 +145,8 @@ void Player::draw(WINDOW* window, uint16_t corner) {
     wattron(window, COLOR_PAIR(hp_color));
     mvwprintw(window, 19, 5, (to_string((int16_t)statistics.hp) + "/" + to_string((uint16_t)statistics.max_hp)).c_str());
     wattroff(window, COLOR_PAIR(hp_color));
+    mvwprintw(window, 19, 20, "Distance: ");
+    mvwprintw(window, 19, 30, (to_string(position.x)).c_str());
 
     wclear(stats_window);
     box(stats_window, 0, 0);

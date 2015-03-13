@@ -106,7 +106,7 @@ vec2 step(vec2 delta) {
 
 vec2 select_target() {
     vec2 target = player->getPosition();
-    uint16_t corner = clamp((int)player->getPosition().x - 35, 0, 2922);
+    uint16_t corner = clamp((int)player->getPosition().x - 35, 0, 922);
     wmove(map->getWindow(), target.y + 1, target.x - corner + 1);
     wrefresh(map->getWindow());
     while(char input = getch()) {

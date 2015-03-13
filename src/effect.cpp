@@ -9,7 +9,7 @@ Effect::Effect(vec2 tile, float radius, bool v, symbol c, std::string ont, std::
     float r = pow(radius, 2);
     for(int i = tile.x - radius; i <= tile.x + radius; ++i) {
         for(int j = tile.y - radius; j <= tile.y + radius; ++j) {
-            if(i < 0 || i > 2998 || j < 0 || j > 17)
+            if(i < 0 || i > 998 || j < 0 || j > 17)
                 continue;
             vec2 dist = tile - vec2(i, j);
             if(pow((float)dist.x, 2) + pow((float)dist.y, 2) == r);
@@ -64,7 +64,7 @@ void Effect::apply() {
         return;
 
     for(auto i : affected_list) {
-        if(i.x < 0 || i.x > 2998 || i.y < 0 || i.y > 17)
+        if(i.x < 0 || i.x > 998 || i.y < 0 || i.y > 17)
             continue;
         Tile* t = map->tile_at(i);
         if(!ontile_callback.empty())
@@ -80,7 +80,7 @@ void Effect::draw(WINDOW* win, uint16_t corner) {
     if(!visible)
         return;
     for(auto i : affected_list) {
-        if(i.x < 0 || i.x > 2998 || i.y < 0 || i.y > 17)
+        if(i.x < 0 || i.x > 998 || i.y < 0 || i.y > 17)
             continue;
         if(i.x < corner || i.x >= corner + 78)
             break;

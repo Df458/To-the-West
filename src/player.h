@@ -43,6 +43,7 @@ public:
     void dropItem(Item* i);
     void useItem(Item* i);
     void add_item(Item* i);
+    virtual void lose_enemy(Unit* u) { enemies.clear(); }
 
     virtual combat_result attack(Unit* other);
     virtual bool should_attack(Unit* other);

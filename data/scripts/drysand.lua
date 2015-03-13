@@ -1,9 +1,4 @@
-if math.random(40) == 1 then
-    game.message("A powerful simoom sweeps across the land, buffeting all that stands in its' way with torrents of sand!", 4);
-    game.effect("radius", this.x, this.y, 45, true, ":", 5, "", "sandstorm.lua");
-end
-
-if this.controlled == true and math.random(3) == 1 then
+if this.controlled == true and math.random(7) == 1 then
     this.hp = this.hp - 1;
     if this.hp / this.hp_max >= .3 and this.hp / this.hp_max < .6 then
         if math.random(20) == 1 then
@@ -25,5 +20,9 @@ if this.controlled == true and math.random(3) == 1 then
         elseif math.random(5) == 1 then
             game.message("You rejoice as you see a beautiful oasis. Then you blink, and it's gone.");
         end
+    end
+    if math.random(90) == 1 then
+        game.message("A powerful simoom sweeps across the land, buffeting all that stands in its' way with torrents of sand!", 4);
+        game.effect("radius", this.x, this.y, 45, true, ":", 5, "", "sandstorm.lua");
     end
 end

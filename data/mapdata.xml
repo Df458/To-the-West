@@ -1,9 +1,10 @@
 <map>
-    <biome type="woods" freq="5"/>
-    <biome type="desert" freq="2"/>
-    <biome type="whitedesert" freq="2"/>
-    <biome type="plains" freq="6"/>
-    <biome type="river" freq="2"/>
-    <biome type="mountain" freq="3"/>
-    <biome type="volcano" freq="2"/>
+    <biome type="woods" freq="5" level="0"/>
+    <biome type="desert" freq="2" level="2"/>
+    <biome type="whitedesert" freq="2" level="11"/>
+    <biome type="plains" freq="6" level="0"/>
+    <biome type="river" freq="2" level="0"/>
+    <biome type="swamp" freq="4" level="4"/>
+    <biome type="mountain" freq="3" level="6"/>
+    <biome type="volcano" freq="2" level="11"/>
 </map>

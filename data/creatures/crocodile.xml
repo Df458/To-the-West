@@ -1,0 +1,5 @@
+<creature name="crocodile">
+    <symbol char="c" color="17"/>
+    <stats hp="40" str="20" spd="12" acc="16" def="30" dog="18" value="12"/>
+    <ai faction="2" hostile="true"/>
+</creature>

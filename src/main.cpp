@@ -120,6 +120,8 @@ int main(int argc, char* argv[]) {
         init_pair(13, COLOR_BLACK,      COLOR_WHITE); // White on black
         init_pair(14, COLOR_BLACK,      COLOR_RED); // White on black
         init_pair(15, COLOR_GRAY,         COLOR_BLACK);
+        init_pair(16, COLOR_BLACK, COLOR_GRAY); // Green on black
+        init_pair(17, COLOR_BLACK, COLOR_LIGHTGREEN); // Green on black
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {
@@ -146,6 +148,7 @@ int main(int argc, char* argv[]) {
     update_panels();
     doupdate();
     while(time_passed >= 0) {
+        //lua_settop(game_state, 0);
         time_passed = player->get_input();
         map->update(time_passed);
         map->draw();

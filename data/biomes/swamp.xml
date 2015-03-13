@@ -1,0 +1,18 @@
+<biome size="145" variance="30" spread="8">
+    <tile symbol="~" color="7" cost="5" freq="80"/>
+    <tile symbol='=' color="7" cost="5" freq="80"/>
+    <tile symbol='-' color="7" cost="5" freq="80"/>
+
+    <tile symbol="~" color="2" cost="5" freq="80"/>
+    <tile symbol='=' color="2" cost="5" freq="80"/>
+    <tile symbol='-' color="2" cost="5" freq="80"/>
+
+    <tile symbol="~" color="3" cost="5" freq="20"/>
+    <tile symbol='=' color="3" cost="5" freq="20"/>
+    <tile symbol='-' color="3" cost="5" freq="20"/>
+
+    <tile symbol='t' color="5" cost="2" freq="40"/>
+    <creature type="serpent" freq="25"/>
+    <creature type="crocodile" freq="100"/>
+    <creature type="giantserpent" freq="5"/>
+</biome>

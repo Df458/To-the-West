@@ -167,7 +167,7 @@ void Unit::update(uint16_t t) {
     if(statistics.hp > statistics.max_hp)
         statistics.hp = statistics.max_hp;
 
-    time += t;
+    time += t + (statistics.speed / 6);
 
     if(statistics.xp >= statistics.max_xp)
         level_up();
@@ -274,7 +274,7 @@ void Unit::retrieve(void) {
 bool Unit::move(vec2 delta) {
     Tile* prev = map->tile_at(position);
     Tile* next = map->tile_at(position + delta);
-    if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 2999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
+    if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
         if(next->getOccupied() && should_attack(next->getOccupant())) {
             Unit* hit = next->getOccupant();
             combat_result res = attack(hit);

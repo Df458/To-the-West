@@ -30,6 +30,9 @@ Map::Map(Unit* player_unit) {
             biome_freqs.push_back(freq);
             freq_max += freq;
         }
+        if(auto a = i->first_attribute("level")) {
+            biomes[biomes.size() - 1].level = atoi(a->value());
+        }
     }
     delete[] data;
 }
@@ -43,7 +46,7 @@ void Map::addUnit(Unit* unit) {
 
 void Map::draw(void) {
     box(map_window, 0, 0);
-    uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 2922);
+    uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 922);
     for(uint16_t i = corner; i < corner + 78; ++i) {
         for(int j = 0; j < 18; ++j) {
             map_data[i][j]->draw(map_window, i - corner + 1, j + 1);
@@ -103,14 +106,14 @@ void Map::update(uint16_t time) {
 }
 
 void Map::spawn(void) {
-    uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 2922);
+    uint16_t corner = clamp((int)active_unit->getPosition().x - 35, 0, 922);
     int32_t x = 0;
-    if((rand() % 3 != 0 || corner > 2807) && corner > 35) {
+    if((rand() % 3 != 0 || corner > 807) && corner > 35) {
         x = rand() % 25 - 50;
     } else {
         x = rand() % 25 + 105;
     }
-    x = clamp((int32_t)corner + x, 0, 3000);
+    x = clamp((int32_t)corner + x, 0, 1000);
     uint16_t y = rand() % 18;
     if(!map_data[x][y]->getPassable() || map_data[x][y]->getOccupied() || !biomes[map_data[x][y]->getBiome()].get_unit())
         return;
@@ -118,7 +121,7 @@ void Map::spawn(void) {
 }
 
 void Map::spawnAt(vec2 position, std::string name) {
-    position.x = clamp((int32_t)position.x, 0, 3000);
+    position.x = clamp((int32_t)position.x, 0, 1000);
     position.y = clamp((int32_t)position.y, 0, 17);
     if(!map_data[position.x][position.y]->getPassable() || map_data[position.x][position.y]->getOccupied())
         return;
@@ -126,33 +129,32 @@ void Map::spawnAt(vec2 position, std::string name) {
 }
 
 void Map::generate(void) {
-    biomes.push_back(Biome("woods"));
-    biomes.push_back(Biome("plains"));
-    biomes.push_back(Biome("desert"));
-    biomes.push_back(Biome("river"));
-    
     for(uint16_t i = 0; i < biomes.size(); ++i) {
         biomes[i].set_index(i);
     }
 
     uint16_t pos = 0;
-    while(pos < 3000) {
-        uint16_t selection = rand() % (freq_max + 1);
-        uint16_t mark = 0;
+    while(pos < 1000) {
         uint16_t b = 0;
-        for(uint16_t i = 0; i < biomes.size(); ++i) {
-            if(biome_freqs[i] + mark >= selection) {
-                b = i;
+        while(true) {
+            uint16_t selection = rand() % (freq_max + 1);
+            uint16_t mark = 0;
+            for(uint16_t i = 0; i < biomes.size(); ++i) {
+                if(biome_freqs[i] + mark >= selection) {
+                    b = i;
+                    break;
+                } else
+                    mark += biome_freqs[i];
+            }
+            if(1000 - biomes[b].level * 60 >= pos)
                 break;
-            } else
-                mark += biome_freqs[i];
         }
-        uint16_t end = clamp(pos + biomes[b].get_size() + rand() % biomes[b].get_variance(), 0, 3000);
+        uint16_t end = clamp(pos + (biomes[b].get_size() / 2) + rand() % biomes[b].get_variance(), 0, 1000);
         for(uint16_t j = 0; j < 18; ++j) {
-            uint16_t x = clamp(pos - rand() % biomes[b].get_spread(), 0, 3000);
+            uint16_t x = clamp(pos - rand() % (biomes[b].get_spread() / 2), 0, 1000);
             if(pos == 0)
                 x = 0;
-            for(uint16_t i = x; i < end && i < 3000; ++i) {
+            for(uint16_t i = x; i < end && i < 1000; ++i) {
                 uint16_t y = j;
                 map_data[i][y] = biomes[b].get_tile(vec2(i, y));
             }

@@ -51,8 +51,8 @@ public:
     inline void setTime(int16_t t) { time = t; }
     virtual bool should_attack(Unit* other);
     void level_up(void);
-    void make_enemy(Unit* u) { if(enemies.find(u) == enemies.end()) enemies.insert(u); }
-    void lose_enemy(Unit* u) { if(enemies.find(u) != enemies.end()) enemies.erase(u); }
+    void make_enemy(Unit* u) { if(enemies.find(u) == enemies.end() && enemies.size() > 10) enemies.insert(u); }
+    virtual void lose_enemy(Unit* u) { if(enemies.find(u) != enemies.end()) enemies.erase(u); }
     void hes_dead_jim() { lose_enemy(target); target = NULL; }
     inline stats get_stats() { return statistics; }
 

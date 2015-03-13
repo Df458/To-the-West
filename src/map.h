@@ -17,6 +17,7 @@ public:
     inline const uint16_t& get_spread(void) const { return spread; }
     inline const uint16_t& get_variance(void) const { return size_variance; }
     inline std::string get_name(void) const { return name; }
+    uint8_t level = 0;
 protected:
     std::string name;
     uint16_t freqs = 0;
@@ -47,7 +48,7 @@ public:
 
 protected:
     Unit* active_unit;
-    Tile* map_data[3000][18];
+    Tile* map_data[1000][18];
     std::vector<Unit*> unit_list[4];
     std::vector<Effect*> effect_list;
     WINDOW* map_window;

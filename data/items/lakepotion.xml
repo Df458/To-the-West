@@ -1,0 +1,4 @@
+<item name="Potion of Lakes" equipable="false">
+    <script type="throw-unit" id="lakepot.lua"/>
+    <script type="throw-tile" id="lakepot.lua"/>
+</item>
