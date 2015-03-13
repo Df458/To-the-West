@@ -326,6 +326,7 @@ void Player::takeItems() {
     std::vector<Item*> it = map->tile_at(position)->takeItems();
     for(auto i : it)
         add_item(i);
+    time -= it.size();
 }
 
 void Player::showInventory() {
@@ -404,17 +405,19 @@ Item* Player::selectItem(bool all) {
                 pos -= 26;
             continue;
         } else {
-            del_panel(inv_panel);
-            delwin(inv_window);
-            update_panels();
-            noecho();
             if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size()) {
                 Item* item = inventory[atoi(input) - 1];
                 if(item->getStack() == 1 || all) {
                     inventory.erase(inventory.begin() + atoi(input) - 1);
+                    del_panel(inv_panel);
+                    delwin(inv_window);
+                    update_panels();
                     return item;
                 } else {
                     item->setStack(item->getStack() - 1);
+                    del_panel(inv_panel);
+                    delwin(inv_window);
+                    update_panels();
                     return new Item(item, 1);
                 }
             } else
@@ -438,7 +441,7 @@ void Player::throwItem(Item* i) {
     vec2 t = select_target();
     if(position.x == t.x && position.y == t.y) {
         add_item(i);
-        message(message("You toss the " + i->getName() + " into the air, and then catch it. "));
+        add_message(message("You toss the " + i->getName() + " into the air, and then catch it. "));
         return;
     }
     add_message(message("You hurl the " + i->getName() + "!"));
@@ -460,6 +463,7 @@ void Player::useItem(Item* i) {
         delete i;
     else
         i->setStack(i->getStack() - 1);
+    time -= 5;
 }
 
 void Player::add_item(Item* it) {
