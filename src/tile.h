@@ -24,7 +24,7 @@ public:
     inline void setPassable(bool pa) { passable = pa; }
     inline bool getPassable(void) { return passable; }
     void addItem(Item* i);
-    std::vector<Item*> takeItems(void) { std::vector<Item*> vec = items; items.clear(); return vec; }
+    std::vector<Item*> takeItems(void);
     virtual void insert();
     virtual void retrieve();
 

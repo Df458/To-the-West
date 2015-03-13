@@ -96,6 +96,9 @@ int Player::get_input(void) {
         case '5':
         case '.':
             return 1;
+        case ',':
+            takeItems();
+            break;
         case '%':
         case '>':
             return 10;
@@ -374,9 +377,10 @@ Item* Player::selectItem(bool all) {
     else {
         if(atoi(input) > 0 && (unsigned)atoi(input) <= inventory.size()) {
             Item* item = inventory[atoi(input) - 1];
-            if(item->getStack() == 1 || all)
+            if(item->getStack() == 1 || all) {
                 inventory.erase(inventory.begin() + atoi(input) - 1);
-            else {
+                return item;
+            } else {
                 item->setStack(item->getStack() - 1);
                 return new Item(item, 1);
             }

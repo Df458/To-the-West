@@ -38,3 +38,9 @@ void Tile::retrieve() {
 void Tile::addItem(Item* it) {
     items.push_back(it);
 }
+
+std::vector<Item*> Tile::takeItems(void) {
+    std::vector<Item*> vec = items;
+    items.clear();
+    return vec;
+}
