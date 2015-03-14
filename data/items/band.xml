@@ -1,0 +1,3 @@
+<item name="Band of the Stars" equipable="false">
+    <script type="use" id="band.lua"/>
+</item>

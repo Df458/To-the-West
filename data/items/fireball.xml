@@ -1,0 +1,4 @@
+<item name="fireball" equipable="false">
+    <script type="throw-unit" id="fireball.lua"/>
+</item>
+

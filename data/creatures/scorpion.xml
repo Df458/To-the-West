@@ -1,0 +1,7 @@
+<creature name="scorpion">
+    <symbol char="s" color="16"/>
+    <stats hp="25" str="15" spd="8" acc="10" def="13" dog="7" value="14"/>
+    <ai faction="2" hostile="true"/>
+    <item type="lakepotion" freq="0.07"/>
+    <item type="bandage" freq="0.87"/>
+</creature>

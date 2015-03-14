@@ -1,0 +1,9 @@
+<creature name="dark warlock Mochus">
+    <symbol char="@" color="15"/>
+    <stats hp="400" str="30" spd="35" acc="28" def="35" dog="26" value="2500"/>
+    <ai faction="1" aggressive="true"/>
+    <item type="band" freq="1"/>
+    <script type="update" id="finalboss.lua"/>
+    <script type="create" id="finalbossintro.lua"/>
+    <script type="die" id="bossdie.lua"/>
+</creature>
