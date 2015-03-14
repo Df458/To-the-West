@@ -1,5 +1,6 @@
 <creature name="crocodile">
     <symbol char="c" color="17"/>
-    <stats hp="40" str="20" spd="12" acc="16" def="30" dog="18" value="12"/>
+    <stats hp="40" str="18" spd="6" acc="16" def="25" dog="14" value="12"/>
     <ai faction="2" hostile="true"/>
+    <item type="healpotion" freq="0.3"/>
 </creature>

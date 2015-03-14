@@ -2,9 +2,15 @@
 #include <curses.h>
 
 void Tile::draw(WINDOW* win, int x, int y) {
+    if(items.size() > 0) {
+        wattron(win, A_UNDERLINE|A_BLINK);
+    }
     wattron(win, COLOR_PAIR(displayed.color_pair));
     mvwaddch(win, y, x, displayed.disp);
     wattroff(win, COLOR_PAIR(displayed.color_pair));
+    if(items.size() > 0) {
+        wattroff(win, A_UNDERLINE|A_BLINK);
+    }
 }
 
 void Tile::insert() {
@@ -30,6 +36,9 @@ void Tile::insert() {
 }
 
 void Tile::retrieve() {
+    lua_getfield(game_state, -1, "passable");
+    passable = lua_toboolean(game_state, -1);
+    lua_pop(game_state, 1);
     lua_getfield(game_state, -1, "char");
     displayed.disp = lua_tostring(game_state, -1)[0];
     lua_pop(game_state, 1);
@@ -46,9 +55,7 @@ void Tile::retrieve() {
     lua_getfield(game_state, -1, "cost");
     move_cost = lua_tointeger(game_state, -1);
     lua_pop(game_state, 1);
-    lua_getfield(game_state, -1, "passable");
-    passable = lua_toboolean(game_state, -1);
-    lua_pop(game_state, 2);
+    lua_pop(game_state, 1);
 }
 
 void Tile::addItem(Item* it) {

@@ -72,6 +72,10 @@ void Map::draw(void) {
 }
 
 void Map::update(uint16_t time) {
+    if(player->getPosition().x <= 50 && !hasboss) {
+        spawnAt(vec2(1, 9), "mochus");
+        hasboss = true;
+    }
     if(rand() % 10 < 1) {
         spawn();
     }
@@ -115,9 +119,9 @@ void Map::spawn(void) {
     }
     x = clamp((int32_t)corner + x, 0, 1000);
     uint16_t y = rand() % 18;
-    if(!map_data[x][y]->getPassable() || map_data[x][y]->getOccupied() || !biomes[map_data[x][y]->getBiome()].get_unit())
+    if(!map_data[x][y]->getPassable() || map_data[x][y]->getOccupied() || !biomes[map_data[x][y]->getBiome()].get_unit(50))
         return;
-    addUnit(new Unit(biomes[map_data[x][y]->getBiome()].get_unit(), vec2(x, y)));
+    addUnit(new Unit(biomes[map_data[x][y]->getBiome()].get_unit((800 - x) / 50), vec2(x, y)));
 }
 
 void Map::spawnAt(vec2 position, std::string name) {
@@ -161,6 +165,15 @@ void Map::generate(void) {
         }
         pos = end;
     }
+
+    for(int i = 0; i < 25; ++i)
+        for(int j = 0; j < 18; ++j) {
+            map_data[i][j]->setSymbol(symbol('>', 0));
+            map_data[i][j]->setPassable(true);
+            map_data[i][j]->clearfuncs();
+        }
+    for(int j = 0; j < 18; ++j)
+        map_data[0][j]->setSymbol(symbol('|', 0));
 }
 
 Unit* Map::getTarget(vec2 position, uint8_t faction) {
@@ -254,13 +267,17 @@ Biome::Biome(std::string file) {
     name = file;
 }
 
-Unit* Biome::get_unit(void) {
+Unit* Biome::get_unit(int16_t lev) {
     uint16_t selection = rand() % (unit_freqs_max + 1);
     uint16_t mark = 0;
     for(uint16_t i = 0; i < units.size(); ++i) {
-        if(unit_freqs[i] + mark >= selection)
-            return new Unit(units[i]);
-        else
+        if(unit_freqs[i] + mark >= selection) {
+            Unit* u = new Unit(units[i]);
+            for(int i = level; i < lev; ++i) {
+                u->level_up();
+            }
+            return u;
+        } else
             mark += unit_freqs[i];
     }
     return NULL;

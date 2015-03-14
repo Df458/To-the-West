@@ -27,6 +27,7 @@ public:
     std::vector<Item*> takeItems(void);
     virtual void insert();
     virtual void retrieve();
+    void clearfuncs() { enter_func = ""; leave_func=""; }
 
     inline std::string get_enter_func(void) { return enter_func; }
     inline std::string get_leave_func(void) { return leave_func; }
@@ -39,7 +40,7 @@ protected:
     uint8_t move_cost = 1;
     uint16_t biome_index = 0;
     bool passable = false;
-    std::string enter_func;
-    std::string leave_func;
+    std::string enter_func = "";
+    std::string leave_func = "";
 };
 #endif

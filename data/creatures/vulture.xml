@@ -2,4 +2,5 @@
     <symbol char="v" color="12"/>
     <stats hp="5" str="15" spd="18" acc="19" def="1" dog="17" value="10"/>
     <ai faction="2" aggressive="true"/>
+    <item type="lakepotion" freq="0.07"/>
 </creature>

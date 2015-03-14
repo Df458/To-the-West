@@ -11,8 +11,9 @@ using namespace std;
 
 Player::Player(void) : Unit() {
     displayed.disp = '@';
-    move_func = "test.lua";
-    //add_item(new Item("healpotion", 2));
+    displayed.color_pair = 16;
+    //move_func = "test.lua";
+    add_item(new Item("bandage", 4));
     //for(int i = 0; i < 100; ++i)
         //add_item(new Item("healpotion", 99));
     position.x = 979;
@@ -32,6 +33,13 @@ Player::Player(void) : Unit() {
     statistics.defense = 16;
     statistics.dodge = 14;
     statistics.speed = 15;
+    //statistics.max_hp = 250;
+    //statistics.hp = 250;
+    //statistics.accuracy = 170;
+    //statistics.strength = 180;
+    //statistics.defense = 160;
+    //statistics.dodge = 140;
+    //statistics.speed = 150;
 }
 
 int Player::get_input(void) {
@@ -181,7 +189,7 @@ void Player::add_message(message mess) {
     dirty = true;
     while(mess.text.size() > 78) {
         uint16_t i = 78;
-        uint offset = 0;
+        uint16_t offset = 0;
         for(i = 78; i >= 0; --i)
             if(mess.text[i] == ' ')
                 break;
@@ -232,12 +240,13 @@ void Player::attacked(combat_result res, Unit* other) {
         add_message(("The " + other->getName() + " misses."));
     else if(res.flags & 0b001 || alive == false) {
         statistics.hp = 0;
-        add_message(message("The " + other->getName() + " strikes a killing blow!", 8));
-        add_message(message("And so, your quest comes to a tragic end..."));
+        add_message(message("The " + other->getName() + " strikes a killing blow! (" + to_string(res.damage) + ")", 8));
+        add_message(message("And so, your quest comes to a tragic end... <Press Enter to exit>"));
         draw_messages();
         update_panels();
         doupdate();
-        getch();
+        char input[1];
+        getnstr(input, 1);
         exit(0);
     } else if(res.flags & 0b010)
         add_message(message("The " + other->getName() +  "'s blow glances off your armor for " + to_string(res.damage) + " damage.", 11));
@@ -249,17 +258,17 @@ bool Player::should_attack(Unit* other) {
     if(!other)
         return false;
     if(!Unit::should_attack(other)) {
-        add_message(message("Really attack the " + other->getName() + "? (y/n)", 4));
-        draw_messages();
-        //update_panels();
-        doupdate();
-        while(char c = getch()) {
-            if(c == 'y')
-                return true;
-            if(c == 'n')
-                return false;
-        }
-        return false;
+        return ask_question(message("Really attack the " + other->getName() + "?", 4));
+        //draw_messages();
+        ////update_panels();
+        //doupdate();
+        //while(char c = getch()) {
+            //if(c == 'y')
+                //return true;
+            //if(c == 'n')
+                //return false;
+        //}
+        //return false;
     }
     return true;
 }
@@ -276,25 +285,47 @@ void Player::level_up(void) {
     statistics.xp = 0;
     statistics.level++;
 
-    statistics.hp += 5;
-    statistics.max_hp += 5;
-    statistics.strength += 2;
-    statistics.defense += 2;
-    statistics.dodge += 2;
-    statistics.speed += 2;
+    int factor[5];
+    for(int i = 1; i < 5; ++i)
+        factor[i] = rand() % 6 - 1;
+    factor[0] = rand() % 5 * 5;
+    statistics.hp += 5 + (6 * statistics.level) + factor[0];
+    statistics.max_hp += 5 + (6 * statistics.level) + factor[0];
+    statistics.strength += 3 + factor[1];
+    statistics.defense += 3 + factor[2];
+    statistics.dodge += 3 + factor[3];
+    statistics.speed += 3 + factor[4];
+    statistics.accuracy += 5;
 
-    statistics.max_xp = pow(10, (float)statistics.level / 3) * statistics.level + 15;
+    statistics.max_xp = pow(10, (float)statistics.level / 4) * statistics.level + 15 + (statistics.level * 20);
 
     wattron(stats_window, A_BLINK | COLOR_PAIR(6));
     mvwprintw(stats_window, 1, 15, "Level Up!");
     wattroff(stats_window, A_BLINK);
+    uint8_t col = 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 2, 15, (">> " + to_string(statistics.level)).c_str());
+    wattroff(stats_window, COLOR_PAIR(col));
+    col = (factor[0] <= 0) ? 0 : (factor[0] > 5) ? 10 : 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 4, 15, (">> " + to_string((int)statistics.max_hp)).c_str());
+    wattroff(stats_window, COLOR_PAIR(col));
+    col = (factor[1] <= 0) ? 0 : (factor[0] > 2) ? 10 : 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 6, 15, (">> " + to_string(statistics.strength)).c_str());
+    wattroff(stats_window, COLOR_PAIR(col));
+    col = (factor[2] <= 0) ? 0 : (factor[0] > 2) ? 10 : 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 8, 15, (">> " + to_string(statistics.defense)).c_str());
+    wattroff(stats_window, COLOR_PAIR(col));
+    col = (factor[3] <= 0) ? 0 : (factor[0] > 2) ? 10 : 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 10, 15, (">> " + to_string(statistics.dodge)).c_str());
+    wattroff(stats_window, COLOR_PAIR(col));
+    col = (factor[4] <= 0) ? 0 : (factor[0] > 2) ? 10 : 6;
+    wattron(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 12, 15, (">> " + to_string(statistics.speed)).c_str());
-    wattroff(stats_window, COLOR_PAIR(6));
+    wattroff(stats_window, COLOR_PAIR(col));
     mvwprintw(stats_window, 14, 1, ("XP:        " + to_string(statistics.xp) + "/" + to_string(statistics.max_xp)).c_str());
     
     stats_panel = new_panel(stats_window);

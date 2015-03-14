@@ -39,8 +39,8 @@ struct symbol {
 };
 
 struct combat_result {
-    uint8_t  flags = 0;
-    uint16_t damage = 0;
+    int16_t  flags = 0;
+    int16_t damage = 0;
 };
 
 std::string get_path(void);
@@ -54,6 +54,19 @@ vec2 step(vec2 delta);
 vec2 select_target();
 
 const char* const help_lines[] = {
+    "Introduction:",
+    "The foul warlock Mochus has stolen the Band of the Stars,",
+    "bringing it to his fortress deep in the western mountains.",
+    "Journey to the western lands,",
+    "find the Band,",
+    "and slay this dark sorceror once and for all!",
+    "",
+    "Note from the creator:",
+    "If a tile is underlined, it has items.",
+    "If a tile has a colored background, it's probably an enemy.",
+    "I didn't have time to indicate this better in-game.",
+    "Sorry!",
+    "",
     "Movement Controls:",
     "y k u 7 8 9",
     " \\|/   \\|/",

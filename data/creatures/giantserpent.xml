@@ -1,5 +1,8 @@
 <creature name="dire serpent">
     <symbol char="S" color="16"/>
-    <stats hp="60" str="20" spd="45" acc="30" def="15" dog="23" value="45"/>
+    <stats hp="60" str="18" spd="30" acc="30" def="15" dog="18" value="45"/>
     <ai faction="2" hostile="true"/>
+    <item type="dart" freq="1"/>
+    <item type="fireball" freq="0.2"/>
+    <item type="healpotion" freq="0.3"/>
 </creature>

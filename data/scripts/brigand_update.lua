@@ -4,7 +4,7 @@ if this.targeting_player == true then
     elseif math.random(4) == 1 and this.hp / this.hp_max < 0.5 then
         game.message("The brigand pulls out a small silver flask, and takes a swig.");
         game.message("The brigand looks much healthier!", 11);
-        this.hp = this.hp + (this.hp_max / 4);
+        this.hp = this.hp + (this.hp_max / 6);
         this.time = this.time - 3;
         if math.random(6) == 1 then
             game.message("Brigand: \"That hit the spot!\"");

@@ -1,5 +1,6 @@
 #include <curses.h>
 #include <string>
+#include <ctime>
 #include "luafunc.h"
 #include "map.h"
 #include "player.h"
@@ -122,6 +123,7 @@ int main(int argc, char* argv[]) {
         init_pair(15, COLOR_GRAY,         COLOR_BLACK);
         init_pair(16, COLOR_BLACK, COLOR_GRAY); // Green on black
         init_pair(17, COLOR_BLACK, COLOR_LIGHTGREEN); // Green on black
+        init_pair(18, COLOR_MAGENTA, COLOR_GRAY); // Green on black
         if(can_change_color()) {
             color_flags += CAN_CHANGE_COLOR;
             if(COLORS >= 256 && COLOR_PAIRS >=256) {
@@ -130,6 +132,7 @@ int main(int argc, char* argv[]) {
             init_color(COLOR_RED, 975, 80, 0);
             init_color(COLOR_WHITE, 900, 900, 900);
             init_color(COLOR_BROWN, 600, 300, 50);
+            init_color(COLOR_MAGENTA, 500, 0, 900);
             init_pair(3, COLOR_BROWN, COLOR_BLACK); // Brown on black
             init_pair(12, COLOR_BLACK, COLOR_BROWN); // Brown on black
         }

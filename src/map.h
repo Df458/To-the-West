@@ -11,7 +11,7 @@ class Biome {
 public:
     Biome(std::string file);
     Tile* get_tile(vec2 pos);
-    Unit* get_unit(void);
+    Unit* get_unit(int16_t level);
     void set_index(uint16_t index);
     inline const uint16_t& get_size(void) const { return size; }
     inline const uint16_t& get_spread(void) const { return spread; }
@@ -56,5 +56,6 @@ protected:
     std::vector<Biome> biomes;
     std::vector<uint16_t> biome_freqs;
     uint32_t freq_max = 0;
+    bool hasboss = false;
 };
 #endif

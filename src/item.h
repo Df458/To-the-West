@@ -28,13 +28,13 @@ protected:
     std::string name;
     bool equipable = false;
 
-    std::string take_func;
-    std::string use_func;
-    std::string equip_func;
-    std::string unequip_func;
-    std::string step_func;
-    std::string throw_tile_func;
-    std::string throw_unit_func;
-    std::string drop_func;
+    std::string take_func = "";
+    std::string use_func = "";
+    std::string equip_func = "";
+    std::string unequip_func = "";
+    std::string step_func = "";
+    std::string throw_tile_func = "";
+    std::string throw_unit_func = "";
+    std::string drop_func = "";
 };
 #endif

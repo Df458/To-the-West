@@ -15,4 +15,5 @@
     <creature type="serpent" freq="25"/>
     <creature type="crocodile" freq="100"/>
     <creature type="giantserpent" freq="5"/>
+    <creature type="necromancer" freq="65"/>
 </biome>

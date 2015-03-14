@@ -2,4 +2,5 @@
     <symbol char="d" color="13"/>
     <stats hp="10" str="10" spd="12" acc="6" def="6" dog="12" value="10"/>
     <ai faction="2" hostile="true"/>
+    <item type="bandage" freq="0.03"/>
 </creature>

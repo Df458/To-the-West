@@ -3,5 +3,6 @@
     <stats hp="46" str="35" spd="40" acc="20" def="19" dog="25" value="40"/>
     <ai faction="2" aggressive="true"/>
     <script type="update" id="fire.update.lua"/>
+    <item type="fireball" freq="0.75"/>
 </creature>
 

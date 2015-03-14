@@ -52,3 +52,14 @@ int lua_spawn(lua_State* ls) {
     map->spawnAt(vec2(lua_tointeger(ls, 1), lua_tointeger(ls, 2)), lua_tostring(ls, 3));
     return 0;
 }
+
+int lua_win(lua_State* ls) {
+    player->add_message(message("Congratulations! You've won! <Press Enter to exit>"));
+    player->draw_messages();
+    update_panels();
+    doupdate();
+    char input[1];
+    getnstr(input, 1);
+    exit(0);
+    return 0;
+}

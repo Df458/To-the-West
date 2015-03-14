@@ -27,10 +27,13 @@ Unit::Unit(Unit* copy, vec2 pos) {
     attack_func = copy->attack_func;
     update_func = copy->update_func;
     displayed = copy->displayed;
+    droprates = copy->droprates;
+    for(auto i : copy->items)
+        items.push_back(new Item(i));
 
     map->tile_at(position)->setOccupied(true);
     map->tile_at(position)->setOccupant(this);
-    map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
+    //map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
     call(create_func);
 }
 
@@ -81,6 +84,28 @@ Unit::Unit(std::string file) {
         if(auto at = n->first_attribute("type")) {
             if(!strcmp(at->value(), "update"))
                 update_func = n->first_attribute("id")->value();
+            if(!strcmp(at->value(), "create"))
+                create_func = n->first_attribute("id")->value();
+            if(!strcmp(at->value(), "die"))
+                die_func = n->first_attribute("id")->value();
+        }
+    }
+    for(auto i = node->first_node("item"); i; i = i->next_sibling("item")) {
+        uint8_t count = 1;
+        float freq = 1;
+        std::string type = "";
+        if(auto at = i->first_attribute("freq"))
+            freq = atof(at->value());
+        if(auto at = i->first_attribute("count")) {
+            count = atoi(at->value());
+        }
+        if(auto at = i->first_attribute("type")) {
+            type = at->value();
+        }
+        if(!type.empty()) {
+            Item* item = new Item(type, count);
+            items.push_back(item);
+            droprates.push_back(freq);
         }
     }
 
@@ -135,6 +160,28 @@ Unit::Unit(std::string file, vec2 pos) {
         if(auto at = n->first_attribute("type")) {
             if(!strcmp(at->value(), "update"))
                 update_func = n->first_attribute("id")->value();
+            if(!strcmp(at->value(), "create"))
+                create_func = n->first_attribute("id")->value();
+            if(!strcmp(at->value(), "die"))
+                die_func = n->first_attribute("id")->value();
+        }
+    }
+    for(auto i = node->first_node("item"); i; i = i->next_sibling("item")) {
+        uint8_t count = 1;
+        float freq = 1;
+        std::string type = "";
+        if(auto at = i->first_attribute("freq"))
+            freq = atof(at->value());
+        if(auto at = i->first_attribute("count")) {
+            count = atoi(at->value());
+        }
+        if(auto at = i->first_attribute("type")) {
+            type = at->value();
+        }
+        if(!type.empty()) {
+            Item* item = new Item(type, count);
+            items.push_back(item);
+            droprates.push_back(freq);
         }
     }
 
@@ -142,8 +189,8 @@ Unit::Unit(std::string file, vec2 pos) {
     position = pos;
     map->tile_at(position)->setOccupied(true);
     map->tile_at(position)->setOccupant(this);
-    map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
-    call(create_func);
+    //map->tile_at(position)->call(map->tile_at(position)->get_enter_func());
+    //call(create_func);
 }
 
 void Unit::draw(WINDOW* window, uint16_t corner) {
@@ -167,7 +214,7 @@ void Unit::update(uint16_t t) {
     if(statistics.hp > statistics.max_hp)
         statistics.hp = statistics.max_hp;
 
-    time += t + (statistics.speed / 6);
+    time += t + (statistics.speed / 7);
 
     if(statistics.xp >= statistics.max_xp)
         level_up();
@@ -176,13 +223,11 @@ void Unit::update(uint16_t t) {
         lua_newtable(game_state);
         target->insert();
         lua_setglobal(game_state, "target");
-    }
-
-    call(update_func);
-
-    if(target) {
+        call(update_func);
         lua_getglobal(game_state, "target");
         target->retrieve();
+    } else {
+        call(update_func);
     }
 
     while(time > 0) {
@@ -200,8 +245,14 @@ void Unit::update(uint16_t t) {
             if(abs(dist.x) > 50 || !target->getAlive()) {
                 target = NULL;
                 time = 0;
-            } else
+            } else {
+                vec2 op;
+                op.x = position.x;
+                op.y = position.y;
                 move(step(dist));
+                if(op.x != position.x || op.y != position.y)
+                    time = 0;
+            }
         } else
             move(vec2(rand() % 3 - 1, rand() % 3 - 1));
     }
@@ -274,7 +325,7 @@ void Unit::retrieve(void) {
 bool Unit::move(vec2 delta) {
     Tile* prev = map->tile_at(position);
     Tile* next = map->tile_at(position + delta);
-    if(next->getOccupied() || !next->getPassable() || (position.x == 0 && delta.x < 0) || position.x + delta.x > 999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
+    if(next->getOccupied() || !next->getPassable() || (position.x == 1 && delta.x < 0) || position.x + delta.x > 999 || (position.y == 0 && delta.y < 0) || position.y + delta.y > 17) {
         if(next->getOccupied() && should_attack(next->getOccupant())) {
             Unit* hit = next->getOccupant();
             combat_result res = attack(hit);
@@ -329,6 +380,13 @@ void Unit::die(void) {
         u->hes_dead_jim();
     alive = false;
     call(die_func);
+    for(uint8_t i = 0; i < items.size(); ++i) {
+        if((float)(rand() % 100) / 100.0f <= droprates[i])
+            map->tile_at(position)->addItem(items[i]);
+        else
+            delete items[i];
+    }
+    items.clear();
 }
 
 combat_result Unit::attack(Unit* other) {
@@ -340,21 +398,23 @@ combat_result Unit::attack(Unit* other) {
         other->target = this;
         make_enemy(other);
     }
-    uint16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2 - 5, 0, 25);
-    uint16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 2 - 5, 0, 25);
+    int16_t hit_roll   = rand() % statistics.accuracy + clamp(statistics.accuracy / 2, 0, 75);
+    int16_t dodge_roll = rand() % other->statistics.dodge + clamp(other->statistics.dodge / 3 - 5, 0, 75);
     if(hit_roll < dodge_roll) {
         time -= 2;
         return retval;
     }
     retval.flags += 0b100;
-    uint16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 3, 0, 25);
+    int16_t block_roll = rand() % other->statistics.defense + clamp(other->statistics.defense / 2 - 3, 0, 25);
     float mod = 1.0f;
     if(hit_roll < block_roll) {
         time--;
         mod = 0.5f;
         retval.flags += 0b010;
     }
-    retval.damage = clamp((rand() % statistics.strength + clamp(statistics.strength / 2, 0, 25)) * mod - clamp(other->statistics.defense / 2 - 5, 0, 25), 1, 1000);
+    retval.damage = clamp((int)((rand() % statistics.strength + clamp(statistics.strength / 2, 0, 75)) * mod) - clamp(other->statistics.defense / 2, 0, 75), 1, 1000);
+    if(retval.damage < 1)
+        retval.damage = 1;
     other->statistics.hp -= retval.damage;
     if(other->statistics.hp <= 0) {
         other->die();
@@ -375,23 +435,24 @@ bool Unit::should_attack(Unit* other) {
         case 1:
             return other->faction == 0;
         case 2:
-            return other->faction == 0 || other->faction == 3;
+            return other->faction == 0;
         case 3:
-            return other->faction == 2;
+            return false;
     }
     return true;
 }
 
 void Unit::level_up(void) {
-    statistics.xp = 0;
     statistics.level++;
 
-    statistics.hp += 5;
-    statistics.max_hp += 5;
+    statistics.hp += 8;
+    statistics.max_hp += 8;
     statistics.strength += 2;
-    statistics.defense += 2;
-    statistics.dodge += 2;
-    statistics.speed += 2;
+    statistics.defense += 1;
+    statistics.dodge += 1;
+    statistics.speed += 1;
+    statistics.accuracy += 2;
+    statistics.xp += 5;
 
     statistics.max_xp = pow(10, (float)(statistics.level < 3 ? 3 : statistics.level) / 3) * statistics.level+ 15;
 }

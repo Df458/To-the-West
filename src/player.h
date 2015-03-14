@@ -10,7 +10,7 @@ public:
         time = 0;
         regen_timer -= t;
         if(regen_timer <= 0) {
-            regen_timer = 20;
+            regen_timer = 40;
             statistics.hp++;
         }
         if(statistics.hp > statistics.max_hp)

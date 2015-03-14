@@ -3,4 +3,6 @@
     <stats hp="20" str="10" spd="6" acc="10" def="8" dog="17" value="28"/>
     <ai faction="1" aggressive="false"/>
     <script type="update" id="necro.lua"/>
+    <item type="healpotion" freq="0.65"/>
+    <item type="lakepotion" freq="0.87"/>
 </creature>

@@ -11,20 +11,22 @@
 // 2: Monsters  - aggro on 0, 3
 // 3: Animals   - aggro on 2
 
+class Item;
+
 struct stats {
     float max_hp = 1;
     float hp = 1;
 
-    uint16_t strength = 1;
-    uint16_t accuracy = 1;
-    uint16_t defense = 1;
-    uint16_t dodge = 1;
-    uint16_t speed = 1;
+    int16_t strength = 1;
+    int16_t accuracy = 1;
+    int16_t defense = 1;
+    int16_t dodge = 1;
+    int16_t speed = 1;
 
-    uint16_t level = 1;
-    uint16_t xp = 0;
-    uint16_t max_xp = 25;
-    uint16_t xp_value = 0;
+    int16_t level = 1;
+    int16_t xp = 0;
+    int16_t max_xp = 25;
+    int16_t xp_value = 0;
 };
 
 class Unit : public LuaObject {
@@ -74,5 +76,7 @@ protected:
     std::string update_func;
     int16_t regen_timer;
     symbol displayed;
+    std::vector<Item*> items;
+    std::vector<float> droprates;
 };
 #endif
