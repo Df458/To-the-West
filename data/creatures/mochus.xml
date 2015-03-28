@@ -1,5 +1,5 @@
 <creature name="dark warlock Mochus">
-    <symbol char="@" color="15"/>
+    <symbol char="@" color="18"/>
     <stats hp="400" str="30" spd="35" acc="28" def="35" dog="26" value="2500"/>
     <ai faction="1" aggressive="true"/>
     <item type="band" freq="1"/>

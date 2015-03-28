@@ -1,9 +1,9 @@
 #ifndef LUA_FUNC_H
 #define LUA_FUNC_H
 extern "C" {
-#include <lua5.1/lua.h>
-#include <lua5.1/lualib.h>
-#include <lua5.1/lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 }
 
 int lua_dispError(lua_State* ls);
@@ -15,7 +15,7 @@ int lua_effectAt(lua_State* ls);
 int lua_spawn(lua_State* ls);
 int lua_win(lua_State* ls);
 
-const luaL_reg lua_global_functions[] = {
+const luaL_Reg lua_global_functions[] = {
     {"disperror", lua_dispError},
     {"gettile", lua_getTile},
     {"settile", lua_setTile},

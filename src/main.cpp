@@ -82,10 +82,14 @@ bool start_menu() {
 }
 
 int main(int argc, char* argv[]) {
+    putenv("PDC_COLS=80");
+    putenv("PDC_LINES=31");
     srand(time(NULL));
     game_state = luaL_newstate();
     luaL_openlibs(game_state);
-    luaL_openlib(game_state, "game", lua_global_functions, 0);
+    lua_newtable(game_state);
+    luaL_setfuncs(game_state, lua_global_functions, 0);
+    lua_setglobal(game_state, "game");
     
     //lua_newtable(game_state);
 
@@ -106,18 +110,21 @@ int main(int argc, char* argv[]) {
             COLOR_LIGHTBLUE = COLOR_BLUE;
             COLOR_GRAY = COLOR_WHITE;
         }
+        if(COLORS < 18) {
+            COLOR_BROWN = COLOR_YELLOW;
+        }
         color_flags += BASIC_COLORS;
         init_pair(1, COLOR_RED, COLOR_WHITE); // Error color
         init_pair(2, COLOR_LIGHTGREEN,  COLOR_BLACK); // Green on black
         init_pair(4, COLOR_YELLOW,      COLOR_BLACK); // Yellow on black
-        init_pair(3, COLOR_YELLOW,      COLOR_BLACK); // Brown on black
+        init_pair(3, COLOR_BROWN, COLOR_BLACK); // Brown on black
         init_pair(5, COLOR_GREEN,       COLOR_BLACK); // Dark Green on black
         init_pair(6, COLOR_LIGHTBLUE,   COLOR_BLACK);
         init_pair(7, COLOR_BLUE,        COLOR_BLACK);
         init_pair(8, COLOR_RED,         COLOR_BLACK);
         init_pair(10, COLOR_LIGHTGREEN, COLOR_BLACK); // Green on black
         init_pair(11, COLOR_YELLOW,     COLOR_BLACK); // Yellow on black
-        init_pair(12, COLOR_YELLOW,     COLOR_BLACK); // Brown on black
+        init_pair(12, COLOR_BLACK, COLOR_BROWN); // Brown on black
         init_pair(13, COLOR_BLACK,      COLOR_WHITE); // White on black
         init_pair(14, COLOR_BLACK,      COLOR_RED); // White on black
         init_pair(15, COLOR_GRAY,         COLOR_BLACK);
@@ -130,11 +137,12 @@ int main(int argc, char* argv[]) {
                 color_flags += MANY_COLORS;
             }
             init_color(COLOR_RED, 975, 80, 0);
+            init_color(COLOR_LIGHTBLUE, 0, 875, 1000);
             init_color(COLOR_WHITE, 900, 900, 900);
-            init_color(COLOR_BROWN, 600, 300, 50);
+            init_color(COLOR_YELLOW, 900, 850, 0);
+            if(COLORS > 17)
+                init_color(COLOR_BROWN, 600, 300, 50);
             init_color(COLOR_MAGENTA, 500, 0, 900);
-            init_pair(3, COLOR_BROWN, COLOR_BLACK); // Brown on black
-            init_pair(12, COLOR_BLACK, COLOR_BROWN); // Brown on black
         }
     }
 

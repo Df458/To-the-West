@@ -1,11 +1,12 @@
 PKGCONFIG=pkg-config
 OS=GNU/Linux
-CXXFLAGS=-I../src -I incl -std=c++14 -O3 -pipe -g -pg -Wall -Wno-literal-suffix -Wno-unused-variable -pedantic-errors `$(PKGCONFIG) --cflags lua5.1`
-WINFLAGS=-Wl,-subsystem,windows -static-libgcc -static-libstdc++ -DWINDOWS
+CXXFLAGS=-I../src -I incl -std=c++14 -O3 -pipe -g -pg -Wall -Wno-literal-suffix -Wno-unused-variable -pedantic-errors `$(PKGCONFIG) --cflags lua`
+WINFLAGS=-m32 -Wl,-subsystem,windows -static-libgcc -static-libstdc++ -DWINDOWS
 LINUXFLAGS=
-CPPLIBS= `$(PKGCONFIG) --static --libs lua5.1` -L. -Wl,-rpath -Wl,./lib
-WINLIBS=-static-libgcc -lpdcurses -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic 
-LINUXLIBS=-lpanel -lcurses
+CPPLIBS= `$(PKGCONFIG) --static --libs lua sdl` -L. -Wl,-rpath -Wl,./lib
+WINLIBS=libpdcurses/*.o -lSDL -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic 
+#LINUXLIBS=-Bstatic -lcurses -lpanel -Bdynamic
+LINUXLIBS=-Bstatic -lpdcurses -Bdynamic
 SRCPATH=src/
 OBJPATH=obj/
 SRCS:=$(wildcard *.cpp)
