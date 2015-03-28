@@ -53,10 +53,7 @@ void Map::draw(void) {
         }
     }
 
-    for(uint8_t j = 0; j < 4; ++j) {
-        for(auto i : unit_list[j])
-            i->draw(map_window, corner);
-    }
+    drawUnits(corner);
 
     update_panels();
     doupdate();
@@ -69,6 +66,13 @@ void Map::draw(void) {
     //update_panels();
     doupdate();
     wmove(map_window, active_unit->getPosition().y + 1, active_unit->getPosition().x - corner + 1);
+}
+
+void Map::drawUnits(uint16_t corner) {
+    for(uint8_t j = 0; j < 4; ++j) {
+        for(auto i : unit_list[j])
+            i->draw(map_window, corner);
+    }
 }
 
 void Map::update(uint16_t time) {

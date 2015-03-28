@@ -37,6 +37,7 @@ public:
 
     void addUnit(Unit* unit);
     void draw(void);
+    void drawUnits(uint16_t corner);
     void update(uint16_t time);
     void generate(void);
     void spawn(void);

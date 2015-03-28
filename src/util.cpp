@@ -109,7 +109,11 @@ vec2 select_target() {
     uint16_t corner = clamp((int)player->getPosition().x - 35, 0, 922);
     wmove(map->getWindow(), target.y + 1, target.x - corner + 1);
     wrefresh(map->getWindow());
+    update_panels();
+    doupdate();
     while(char input = getch()) {
+        map->tile_at(target)->draw(map->getWindow(), target.x - corner + 1, target.y + 1);
+        map->drawUnits(corner);
     switch(input) {
         case 'h':
         case '4':
@@ -168,8 +172,14 @@ vec2 select_target() {
             return vec2(-1, -1);
             break;
         }
+        wattron(map->getWindow(), COLOR_PAIR(13));
+        mvwaddch(map->getWindow(), target.y + 1, target.x - corner + 1, ' ');
+        wattroff(map->getWindow(), COLOR_PAIR(13));
         wmove(map->getWindow(), target.y + 1, target.x - corner + 1);
+        update_panels();
+        doupdate();
         wrefresh(map->getWindow());
     }
+    wrefresh(map->getWindow());
     return target;
 }
