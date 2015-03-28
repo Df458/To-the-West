@@ -5,6 +5,8 @@ WINFLAGS=-m32 -Wl,-subsystem,windows -static-libgcc -static-libstdc++ -DWINDOWS
 LINUXFLAGS=
 CPPLIBS= `$(PKGCONFIG) --static --libs lua sdl` -L. -Wl,-rpath -Wl,./lib
 WINLIBS=libpdcurses/*.o -lSDL -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic 
+# SWAP the following two lines(Uncomment one, comment the other) to switch
+# between console curses and pdcurses(which can support SDL/X11 output)
 #LINUXLIBS=-Bstatic -lcurses -lpanel -Bdynamic
 LINUXLIBS=-Bstatic -lpdcurses -Bdynamic
 SRCPATH=src/
